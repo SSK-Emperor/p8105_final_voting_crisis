@@ -1,0 +1,15 @@
+name: "Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020 Election in New York State"
+output_dir: "."
+navbar:
+  title: "Home"
+  left:
+   - text: About
+     href: "about.html"
+  right:
+    - icon: Data
+      href: "Final-data.html"
+    - icon: fa-github fa-lg
+      href: https://github.com/SSK-Emperor/p8105_final_voting_crisis
+output:
+  html_document:
+    theme: yeti

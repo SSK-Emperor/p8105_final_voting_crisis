@@ -1,0 +1,4 @@
+---
+  title: "**Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020 Election in New York State**"
+  output: html_document
+---

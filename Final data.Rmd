@@ -6,7 +6,8 @@ output: html_document
 ---
 
 ```{r}
-library("tidyverse")
+library(tidyverse)
+library(ggplot2)
 ```
 
 ```{r}
@@ -36,4 +37,16 @@ election_result = read.csv("data/election_result_NY_2020.csv")
 df = left_join(covid_19_NY, election_result,by = "County")
 df = left_join(df, covid_19_fatality_NY, by = "County")
 ```
+
+```{r}
+#ggplot(data = df, aes(x = County, y = republician_percent)) + 
+#  geom_bar() +
+#  labs(x = "city") +
+#  theme(axis.text.x = element_text(angle = 70, hjust = 1))
+```
+
+```{r}
+demographic = read.csv("data/2000_demographic_voting_all_characters.csv")
+```
+
 
