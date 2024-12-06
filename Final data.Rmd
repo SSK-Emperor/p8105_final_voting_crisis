@@ -1,0 +1,30 @@
+---
+title: "Data"
+author: "Shi Tiancheng"
+date: "2024-12-06"
+output: html_document
+---
+
+```{r}
+library("tidyverse")
+```
+
+
+```{r}
+covid_19 = read.csv("data/New_York_State_Statewide_COVID-19_Testing__Archived__20241205.csv")
+```
+
+```{r}
+covid_19_NY = filter(covid_19,
+                     Test.Date == "11/03/2020" &
+                       Geography == "COUNTY")
+```
+
+```{r}
+election_result = read.csv("data/election_result_NY_2020.csv")
+```
+
+```{r}
+df = left_join(covid_19_NY, election_result,by = "County")
+```
+
