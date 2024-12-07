@@ -6,3 +6,191 @@ output:
     vertical_layout: fill
 runtime: shiny
 ---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(rsconnect)
+library(leaflet)
+
+squirrel_census = 
+  read_csv("data/clean_squirrel_2018.csv") |> 
+  janitor::clean_names()
+
+```
+
+Select Squirrel Details {.sidebar}
+-----------------------------------------------------------------------
+
+### Select Squirrel Details
+
+```{r}
+age_vec = c("All", squirrel_census |> filter(age != "?") |> pull(age) |> unique())
+  
+selectInput (
+  inputId = "age_choice",
+  label = "Age",
+  choices = age_vec,
+  selected = "All"
+  )
+
+
+activity_vec = 
+  c("All",
+  squirrel_census |>   
+  mutate(activity = case_when(
+      running == "TRUE" ~ "Running",
+      chasing == "TRUE" ~ "Chasing",
+      climbing == "TRUE" ~ "Climbing",
+      foraging == "TRUE" ~ "Foraging",
+      .default = "Sedentary"
+    )
+  ) |> 
+  filter(activity != "Sedentary") |> 
+  pull(activity) |> 
+  unique ()
+  )
+
+selectInput (
+  inputId = "activity_choice",
+  label = "Activity",
+  choices = activity_vec,
+  selected = "All"
+  )
+
+
+shift_vec = c("All", squirrel_census |> pull(shift) |> unique())
+  
+selectInput (
+  inputId = "shift_choice",
+  label = "Time of Day",
+  choices = shift_vec,
+  selected = "All"
+  )
+
+
+location_vec = c("All", squirrel_census |> pull(location) |> unique())
+  
+selectInput (
+  inputId = "location_choice",
+  label = "Location",
+  choices = location_vec, 
+  selected = "All"
+  )
+```
+
+
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Interactive Voting Map
+
+```{r}
+renderPlotly({
+  squirrel_fur_graph =
+    squirrel_census |> 
+    mutate(
+      activity = case_when(
+        running == "TRUE" ~ "Running",
+        chasing == "TRUE" ~ "Chasing",
+        climbing == "TRUE" ~ "Climbing",
+        foraging == "TRUE" ~ "Foraging",
+        .default = "Sedentary")
+  ) |> 
+    select(x, y, primary_fur_color, activity, shift, age, location, name, combination_of_primary_and_highlight_color) |> 
+    filter(!is.na(primary_fur_color)) |> 
+    filter(age != "?") 
+    
+  
+  age_choice = input[["age_choice"]]
+  if (age_choice != "All") {
+    squirrel_fur_graph <- squirrel_fur_graph |> filter(age == age_choice)
+  }
+  
+  activity_choice = input[["activity_choice"]]
+  if(activity_choice != "All"){
+    squirrel_fur_graph <- squirrel_fur_graph |> filter(activity == activity_choice)
+  }
+  
+  shift_choice = input[["shift_choice"]]
+  if(shift_choice != "All"){
+    squirrel_fur_graph <- squirrel_fur_graph |> filter(shift == shift_choice)
+  }
+  
+  location_choice = input[["location_choice"]]
+  if(location_choice != "All"){
+    squirrel_fur_graph <- squirrel_fur_graph |> filter(location == location_choice)
+  }
+    
+  squirrel_fur_graph |> 
+    mutate(squirrel_deets = str_c(name, age, combination_of_primary_and_highlight_color, activity, shift, location, sep = "<br />")) |>
+    plot_ly(lat = ~y,
+    lon = ~x,
+    color = ~primary_fur_color,
+    colors = "Set2",
+    marker = list(color = "Dark"),
+    type = 'scattermapbox',
+    hovertext = ~squirrel_deets,
+    mode   = 'markers', 
+    alpha = 0.7) |> 
+    layout(
+    mapbox = list(
+      style = 'carto-positron',
+      zoom = 12.75,
+      center = list(lon = -73.96473, lat = 40.78396))) 
+})
+
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Squirrel Sounds
+
+```{r age_sounds, warning=FALSE, fig.align='center', fig.width=4, fig.height=4}
+# Grouping sounds by age
+sound_summary = squirrel_census |>
+  filter(age != "?") |> 
+  group_by(age) |>
+  summarise(
+    Kuks = sum(kuks, na.rm = TRUE),
+    Quaas = sum(quaas, na.rm = TRUE),
+    Moans = sum(moans, na.rm = TRUE)
+  ) |>
+  pivot_longer(cols = c(Kuks, Quaas, Moans), names_to = "Sound", values_to = "Count") |> 
+  mutate(
+    perc_vocals = (Count/ sum(Count))*100
+  )
+
+# Creating a bubble plot showing sound by squirrel age
+plot_ly(data = sound_summary, x = ~age, y = ~perc_vocals, size = ~Count, type = 'scatter', mode = 'markers', 
+        marker = list(sizemode = 'diameter', opacity = 0.5), color = ~Sound, 
+        hoverinfo = 'text', text = ~paste(Sound, ': ', Count)) |>
+  layout(title = 'Squirrel Sounds by Age',
+         xaxis = list(title = 'Age'),
+         yaxis = list(title = 'Percent of Sound Type')) 
+```
+
+
+
+### Where Squirrels Eat
+
+```{r, fig.width= 10, fig.align='center'}
+squirrel_census |> 
+  filter(eating == TRUE) |> view()
+leaflet() |>  
+  addTiles() |>  
+  addCircleMarkers(data = squirrel_census,
+             lng = ~x,
+             lat = ~y,
+             label = ~name,
+             radius = 1,
+             color = "green",
+             stroke = TRUE, fillOpacity = 0.75,
+             popup = ~paste("Name:", name,
+                            "<br> Eating:", eating)) |> 
+  addProviderTiles(providers$CartoDB.Positron)
+```
