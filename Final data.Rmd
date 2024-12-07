@@ -8,8 +8,6 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(stringr)
-
-
 ```
 
 ```{r}
@@ -39,6 +37,11 @@ election_result = read.csv("data/election_result_NY_2020.csv")
 df = left_join(covid_19_NY, election_result,by = "County")
 df = left_join(df, covid_19_fatality_NY, by = "County")
 ```
+
+```{r}
+write.csv(df, "data/voting_covid_detail.csv", row.names = FALSE)
+```
+
 
 ```{r}
 ```
@@ -80,7 +83,7 @@ poverty_county_level <- cbind(first_column, df) %>%
   mutate(
     county = sub(" County, New York$", "", county)
   ) %>%
-  select(-label_grouping)
+  select(-label_grouping)%>%
   slice(-1) 
 ```
 

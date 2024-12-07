@@ -1,4 +1,23 @@
 ---
-  title: "**Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020 Election in New York State**"
-  output: html_document
+title: "**Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020 Election in New York State**"
+output: 
+  html_document:
+    code_folding: hide
 ---
+
+
+```{r}
+library(tidyverse)
+library(urbnmapr)
+```
+
+---
+
+### Welcome
+
+### Election detail of 2020 in New York State
+
+```{r}
+NY = read.csv("data/voting_covid_detail.csv")
+```
+
