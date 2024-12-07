@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -277,7 +277,106 @@ $(document).ready(function () {
 <div id="linear-model-of-trump-without-covid-factor"
 class="section level3">
 <h3>Linear model of Trump without Covid factor</h3>
-<pre class="r"><code>#model1 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = final_data)</code></pre>
+<pre class="r"><code>model1 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent, data = final_data)</code></pre>
+<pre class="r"><code>summary(model1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = republician_percent ~ below_poverty_percentage + 
+##     below_30_percent + above_65_percent, data = final_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -27.3811  -6.7400   0.9283   6.6519  20.8131 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)              45.87414   24.34765   1.884   0.0647 .
+## below_poverty_percentage  0.02125    0.51737   0.041   0.9674  
+## below_30_percent         -0.78001    0.53852  -1.448   0.1531  
+## above_65_percent          0.87878    0.69302   1.268   0.2100  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 10.96 on 56 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.1956, Adjusted R-squared:  0.1525 
+## F-statistic: 4.538 on 3 and 56 DF,  p-value: 0.006445</code></pre>
+<pre class="r"><code>model1_data &lt;- final_data |&gt;
+  add_predictions(model1) |&gt;
+  add_residuals(model1)</code></pre>
+<pre class="r"><code>ggplot(model1_data, aes(x = pred, y = resid)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 2 rows containing non-finite outside the scale range
+## (`stat_smooth()`).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
+<p><img src="model_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="linear-model-of-trump-with-covid-factor"
+class="section level3">
+<h3>Linear model of Trump with Covid factor</h3>
+<pre class="r"><code>model2 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+Test_Positive, data = final_data)</code></pre>
+<pre class="r"><code>summary(model2)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = republician_percent ~ below_poverty_percentage + 
+##     below_30_percent + above_65_percent + Test_Positive, data = final_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -26.877  -5.970   1.292   6.824  21.189 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)              42.45013   24.92636   1.703   0.0942 .
+## below_poverty_percentage  0.00246    0.52035   0.005   0.9962  
+## below_30_percent         -0.70955    0.54994  -1.290   0.2024  
+## above_65_percent          0.91539    0.69801   1.311   0.1952  
+## Test_Positive             0.62938    0.88585   0.710   0.4804  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 11.01 on 55 degrees of freedom
+##   (2 observations deleted due to missingness)
+## Multiple R-squared:  0.2029, Adjusted R-squared:  0.1449 
+## F-statistic:   3.5 on 4 and 55 DF,  p-value: 0.01288</code></pre>
+<pre class="r"><code>model2_data &lt;- final_data |&gt;
+  add_predictions(model2) |&gt;
+  add_residuals(model2)</code></pre>
+<pre class="r"><code>ggplot(model2_data, aes(x = pred, y = resid)) +
+  geom_point(alpha = 0.2) +
+  geom_smooth()</code></pre>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y ~ x&#39;</code></pre>
+<pre><code>## Warning: Removed 2 rows containing non-finite outside the scale range
+## (`stat_smooth()`).</code></pre>
+<pre><code>## Warning: Removed 2 rows containing missing values or values outside the scale range
+## (`geom_point()`).</code></pre>
+<p><img src="model_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="compare-the-two-model" class="section level3">
+<h3>Compare the two model</h3>
+<pre class="r"><code>compare = crossv_mc(final_data, 100) |&gt; mutate(train = map(train, as_tibble),
+                                      test = map(test, as_tibble))</code></pre>
+<pre class="r"><code>compare = compare |&gt; mutate(
+    model1 = map(train, \(df) lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent, data = df)),
+    model2 = map(train, \(df) lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+Test_Positive, data = df)),
+    rmse_model1 = 
+      map2_dbl(model1, test, \(mod, df) rmse(model = mod, data = df)),
+    rmse_model2 = 
+      map2_dbl(model2, test, \(mod, df) rmse(model = mod, data = df))
+)</code></pre>
+<pre class="r"><code>compare |&gt; 
+  select(starts_with(&quot;rmse&quot;)) |&gt; 
+  pivot_longer(
+    everything(),
+    names_to = &quot;model&quot;, 
+    values_to = &quot;rmse&quot;,
+    names_prefix = &quot;rmse_&quot;) |&gt; 
+  mutate(model = fct_inorder(model)) |&gt; 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()</code></pre>
+<p><img src="model_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 
 
