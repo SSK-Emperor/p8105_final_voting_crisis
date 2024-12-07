@@ -8,6 +8,10 @@ output: html_document
 ```{r}
 library(tidyverse)
 library(ggplot2)
+library(dplyr)
+library(stringr)
+
+
 ```
 
 ```{r}
@@ -45,8 +49,87 @@ df = left_join(df, covid_19_fatality_NY, by = "County")
 #  theme(axis.text.x = element_text(angle = 70, hjust = 1))
 ```
 
+
+*Socioeconomic indicator---poverty
 ```{r}
-demographic = read.csv("data/2000_demographic_voting_all_characters.csv")
+#Load dataset
+poverty_level <- read.csv("data/2000_socioeconomic_indicator_poverty.csv") %>%
+  janitor::clean_names()
 ```
 
+
+```{r}
+#Extract the first column and use it as a dataframe
+first_column <- data.frame(poverty_level$label_grouping)%>%
+  filter(str_ends(poverty_level$label_grouping, "New York"))
+```
+
+```{r}
+#keeping all estimate as a seprate dataframe
+df <- poverty_level%>%
+  filter(str_ends(label_grouping,"Estimate"))
+```
+
+```{r}
+#Binding those two into one dataframe
+poverty_county_level <- cbind(first_column, df) %>%
+  mutate(
+    total = as.numeric(gsub(",", "", total)),
+    total_income_in_the_past_12_months_at_or_above_the_poverty_level = as.numeric(gsub(",", "", total_income_in_the_past_12_months_at_or_above_the_poverty_level)),
+    total_income_in_the_past_12_months_below_poverty_level = as.numeric(gsub(",", "", total_income_in_the_past_12_months_below_poverty_level)),
+    above_poverty_percentage = (total_income_in_the_past_12_months_at_or_above_the_poverty_level / total) * 100,
+    below_poverty_percentage = (total_income_in_the_past_12_months_below_poverty_level / total) * 100
+  ) %>%
+  rename(
+    county = poverty_level.label_grouping
+  ) %>%
+  mutate(
+    county = sub(" County, New York$", "", county)
+  ) %>%
+  select(-label_grouping)
+  slice(-1) 
+```
+
+
+
+*2020 voting demographic---age
+```{r}
+#load the dataset
+voting_age <- read_csv("data/2000_voting_demographic_age.csv")%>%
+  janitor::clean_names()
+```
+
+```{r}
+#Extract the first column and use it as a dataframe
+first_column_age <- data.frame(voting_age$label_grouping)%>%
+  filter(str_ends(voting_age$label_grouping, "New York"))%>%
+   rename(
+    county = voting_age.label_grouping
+  ) %>%
+    mutate(
+    county = sub(" County, New York$", "", county))
+```
+
+```{r}
+#keeping all estimate as a seprate dataframe
+
+df_age <- voting_age%>%
+  filter(str_ends(label_grouping,"Estimate"))%>%
+  mutate(
+    total_18_to_29_years = as.numeric(gsub(",", "",total_18_to_29_years)),
+    total_30_to_44_years = as.numeric(gsub(",", "",total_30_to_44_years)),
+    total_45_to_64_years = as.numeric(gsub(",", "",total_45_to_64_years)),
+    total_65_years_and_over = as.numeric(gsub(",", "",total_65_years_and_over)),
+    total = as.numeric(gsub(",", "",total)))%>%
+  mutate(
+    below_30_percent = (total_18_to_29_years)/total*100,
+    above_30_percent = (total_30_to_44_years+total_45_to_64_years+total_65_years_and_over)/total*100,
+    above_65_percent = total_65_years_and_over/total*100)
+```
+
+```{r}
+#Binding those two into one dataframe
+voting_age_county_level <- cbind(first_column_age, df_age)%>%
+  slice(-1)
+```
 
