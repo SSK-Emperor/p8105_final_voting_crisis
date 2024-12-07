@@ -1,0 +1,11 @@
+---
+output: html_document
+---
+
+### Linear model of Trump without Covid factor
+
+```{r}
+
+```
+
+

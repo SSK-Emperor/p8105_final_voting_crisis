@@ -1,7 +1,5 @@
 ---
 title: "Data"
-author: "Shi Tiancheng"
-date: "2024-12-06"
 output: html_document
 ---
 
@@ -43,10 +41,6 @@ df = left_join(df, covid_19_fatality_NY, by = "County")
 ```
 
 ```{r}
-#ggplot(data = df, aes(x = County, y = republician_percent)) + 
-#  geom_bar() +
-#  labs(x = "city") +
-#  theme(axis.text.x = element_text(angle = 70, hjust = 1))
 ```
 
 

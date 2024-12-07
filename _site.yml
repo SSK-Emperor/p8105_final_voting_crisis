@@ -3,11 +3,13 @@ output_dir: "."
 navbar:
   title: "Home"
   left:
-   - text: About
-     href: "about.html"
+    - text: About
+      href: about.html
   right:
     - icon: Data
-      href: "Final-data.html"
+      href: Final-data.html
+    - icon: Model
+      href: model.html
     - icon: fa-github fa-lg
       href: https://github.com/SSK-Emperor/p8105_final_voting_crisis
 output:
