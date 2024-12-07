@@ -8,7 +8,7 @@ output:
 
 ```{r}
 library(tidyverse)
-library(urbnmapr)
+#library(urbnmapr)
 ```
 
 ---
@@ -19,5 +19,9 @@ library(urbnmapr)
 
 ```{r}
 NY = read.csv("data/voting_covid_detail.csv")
+```
+
+```{r}
+
 ```
 

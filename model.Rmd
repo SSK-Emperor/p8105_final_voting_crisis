@@ -2,10 +2,29 @@
 output: html_document
 ---
 
+```{r, results='hide'}
+library(tidyverse)
+library(readxl)
+```
+
+```{r, results='hide'}
+election_covid = read.csv("data/voting_covid_detail.csv")
+age = read_excel("data/voting_age_county_level_clean_v2.0.xlsx")
+poverty = read_excel("data/poverty_county_level__clean_v2.0.xlsx")
+hospitals = read_excel("data/2020_health_facility_count.xlsx")
+names(election_covid)[names(election_covid)=="County"] <- "county"
+```
+
+```{r, results='hide'}
+final_data = list(election_covid,age,poverty,hospitals)
+final_data = final_data %>% reduce(left_join, by = "county")
+```
+
+
 ### Linear model of Trump without Covid factor
 
 ```{r}
-
+#model1 = lm(republician_percent = below_poverty_percentage+below_30_percent+above_65_percent+count, data = final_data)
 ```
 
 
