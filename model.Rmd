@@ -18,6 +18,12 @@ names(election_covid)[names(election_covid)=="County"] <- "county"
 ```{r, echo = FALSE}
 final_data = list(election_covid,age,poverty,hospitals)
 final_data = final_data %>% reduce(left_join, by = "county")
+final_data = final_data %>%
+  mutate(republician_percent = as.numeric(gsub("%", "", republician_percent)),
+         democratic_percent = as.numeric(gsub("%", "", democratic_percent)),
+         democratic_num = as.numeric(democratic_num),
+         republician_num = as.numeric(republician_num),
+         Test...Positive = as.numeric(gsub("%", "", Test...Positive)))
 ```
 
 

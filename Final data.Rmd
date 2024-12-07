@@ -38,15 +38,6 @@ df = left_join(covid_19_NY, election_result,by = "County")
 df = left_join(df, covid_19_fatality_NY, by = "County")
 ```
 
-```{r}
-write.csv(df, "data/voting_covid_detail.csv", row.names = FALSE)
-```
-
-
-```{r}
-```
-
-
 *Socioeconomic indicator---poverty
 ```{r}
 #Load dataset
