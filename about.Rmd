@@ -45,6 +45,8 @@ Thank you so much for visiting our site! We are a team of graduate students at C
 
 Through this project, we aim to sharpen our skills in applied biostatistics, data visualization, and public health communication while contributing meaningful insights into how crises shape electoral processes. We hope our work not only informs but also inspires conversations about the resilience of democratic systems in the face of unprecedented challenges.
 
+
+
 ### About Our data
 
 
