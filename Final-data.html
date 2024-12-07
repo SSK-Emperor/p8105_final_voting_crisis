@@ -9,16 +9,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Shi Tiancheng" />
 
-<meta name="date" content="2024-12-06" />
 
 <title>Data</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -252,10 +250,10 @@ $(document).ready(function () {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="Final-data.html">
-    <span class=" Data"></span>
-     
-  </a>
+  <a href="Final-data.html">Data</a>
+</li>
+<li>
+  <a href="model.html">Model</a>
 </li>
 <li>
   <a href="https://github.com/SSK-Emperor/p8105_final_voting_crisis">
@@ -273,24 +271,24 @@ $(document).ready(function () {
 
 
 <h1 class="title toc-ignore">Data</h1>
-<h4 class="author">Shi Tiancheng</h4>
-<h4 class="date">2024-12-06</h4>
 
 </div>
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+<pre><code>## ── Attaching core tidyverse packages ───────────────────
 ## ✔ dplyr     1.1.4     ✔ readr     2.1.5
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
 ## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
 ## ✔ purrr     1.0.2     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ── Conflicts ────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(ggplot2)</code></pre>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+library(stringr)</code></pre>
 <pre class="r"><code>covid_19 = read.csv(&quot;data/New_York_State_Statewide_COVID-19_Testing__Archived__20241205.csv&quot;)</code></pre>
 <pre class="r"><code>covid_19_NY = filter(covid_19,
                      Test.Date == &quot;11/03/2020&quot; &amp;
@@ -301,11 +299,70 @@ $(document).ready(function () {
 <pre class="r"><code>election_result = read.csv(&quot;data/election_result_NY_2020.csv&quot;)</code></pre>
 <pre class="r"><code>df = left_join(covid_19_NY, election_result,by = &quot;County&quot;)
 df = left_join(df, covid_19_fatality_NY, by = &quot;County&quot;)</code></pre>
-<pre class="r"><code>#ggplot(data = df, aes(x = County, y = republician_percent)) + 
-#  geom_bar() +
-#  labs(x = &quot;city&quot;) +
-#  theme(axis.text.x = element_text(angle = 70, hjust = 1))</code></pre>
-<pre class="r"><code>demographic = read.csv(&quot;data/2000_demographic_voting_all_characters.csv&quot;)</code></pre>
+<pre class="r"><code>write.csv(df, &quot;data/voting_covid_detail.csv&quot;, row.names = FALSE)</code></pre>
+<p>*Socioeconomic indicator—poverty</p>
+<pre class="r"><code>#Load dataset
+poverty_level &lt;- read.csv(&quot;data/2000_socioeconomic_indicator_poverty.csv&quot;) %&gt;%
+  janitor::clean_names()</code></pre>
+<pre class="r"><code>#Extract the first column and use it as a dataframe
+first_column &lt;- data.frame(poverty_level$label_grouping)%&gt;%
+  filter(str_ends(poverty_level$label_grouping, &quot;New York&quot;))</code></pre>
+<pre class="r"><code>#keeping all estimate as a seprate dataframe
+df &lt;- poverty_level%&gt;%
+  filter(str_ends(label_grouping,&quot;Estimate&quot;))</code></pre>
+<pre class="r"><code>#Binding those two into one dataframe
+poverty_county_level &lt;- cbind(first_column, df) %&gt;%
+  mutate(
+    total = as.numeric(gsub(&quot;,&quot;, &quot;&quot;, total)),
+    total_income_in_the_past_12_months_at_or_above_the_poverty_level = as.numeric(gsub(&quot;,&quot;, &quot;&quot;, total_income_in_the_past_12_months_at_or_above_the_poverty_level)),
+    total_income_in_the_past_12_months_below_poverty_level = as.numeric(gsub(&quot;,&quot;, &quot;&quot;, total_income_in_the_past_12_months_below_poverty_level)),
+    above_poverty_percentage = (total_income_in_the_past_12_months_at_or_above_the_poverty_level / total) * 100,
+    below_poverty_percentage = (total_income_in_the_past_12_months_below_poverty_level / total) * 100
+  ) %&gt;%
+  rename(
+    county = poverty_level.label_grouping
+  ) %&gt;%
+  mutate(
+    county = sub(&quot; County, New York$&quot;, &quot;&quot;, county)
+  ) %&gt;%
+  select(-label_grouping)%&gt;%
+  slice(-1) </code></pre>
+<p>*2020 voting demographic—age</p>
+<pre class="r"><code>#load the dataset
+voting_age &lt;- read_csv(&quot;data/2000_voting_demographic_age.csv&quot;)%&gt;%
+  janitor::clean_names()</code></pre>
+<pre><code>## Rows: 189 Columns: 6
+## ── Column specification ────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (6): Label (Grouping), Total:, Total:!!18 to 29 years, Total:!!30 to 44 ...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>#Extract the first column and use it as a dataframe
+first_column_age &lt;- data.frame(voting_age$label_grouping)%&gt;%
+  filter(str_ends(voting_age$label_grouping, &quot;New York&quot;))%&gt;%
+   rename(
+    county = voting_age.label_grouping
+  ) %&gt;%
+    mutate(
+    county = sub(&quot; County, New York$&quot;, &quot;&quot;, county))</code></pre>
+<pre class="r"><code>#keeping all estimate as a seprate dataframe
+
+df_age &lt;- voting_age%&gt;%
+  filter(str_ends(label_grouping,&quot;Estimate&quot;))%&gt;%
+  mutate(
+    total_18_to_29_years = as.numeric(gsub(&quot;,&quot;, &quot;&quot;,total_18_to_29_years)),
+    total_30_to_44_years = as.numeric(gsub(&quot;,&quot;, &quot;&quot;,total_30_to_44_years)),
+    total_45_to_64_years = as.numeric(gsub(&quot;,&quot;, &quot;&quot;,total_45_to_64_years)),
+    total_65_years_and_over = as.numeric(gsub(&quot;,&quot;, &quot;&quot;,total_65_years_and_over)),
+    total = as.numeric(gsub(&quot;,&quot;, &quot;&quot;,total)))%&gt;%
+  mutate(
+    below_30_percent = (total_18_to_29_years)/total*100,
+    above_30_percent = (total_30_to_44_years+total_45_to_64_years+total_65_years_and_over)/total*100,
+    above_65_percent = total_65_years_and_over/total*100)</code></pre>
+<pre class="r"><code>#Binding those two into one dataframe
+voting_age_county_level &lt;- cbind(first_column_age, df_age)%&gt;%
+  slice(-1)</code></pre>
 
 
 
