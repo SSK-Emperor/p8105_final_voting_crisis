@@ -398,9 +398,7 @@ ggplot(model1_data, aes(x = pred, y = resid)) +
        x = &quot;Predicted value&quot;,
        y = &quot;residual value&quot;) +
   geom_smooth()</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-4-1.png" width="672" />
-*Formula:
-republican_percent∼below_poverty_percentage+below_30_percent+above_65_percent+count</p>
+<p><img src="model_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Description: This baseline linear regression model evaluates the
 relationship between Republican voting percentages and key demographic
 factors at the county level, excluding any variables related to
@@ -432,9 +430,7 @@ ggplot(model2_data, aes(x = pred, y = resid)) +
        x = &quot;Predict value&quot;,
        y = &quot;residuals&quot;)+
   geom_smooth()</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-5-1.png" width="672" />
-Formula:
-republican_percent∼below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive</p>
+<p><img src="model_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>Description: This model extends reduced Model by including the
 variable (Test_Positive), representing COVID-19 test positivity rates at
 the county level. This addition captures the potential influence of the
