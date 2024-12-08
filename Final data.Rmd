@@ -219,20 +219,6 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
   )
 ```
 
-<<<<<<< HEAD
-### **poverty distribution in New York State**
-```{r}
-ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
-  geom_bar(stat = "identity", fill = "steelblue") +
-  labs(
-    title = "Poverty Rate by County",
-    x = "County",
-    y = "Poverty Rate (%)"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-```
-=======
 ### **Poverty level in New York State**
 ```{r}
 #Load the dataset and merge with election results based on county
@@ -242,9 +228,6 @@ poverty_county_level<- read_excel("data/poverty_county_level__clean_v2.0.xlsx")%
   left_join(election_result,by="county")%>%
   select(county,result,below_poverty_percentage)
 
-```
-
-```{r}
 #create barchart of poverty distribution
 ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
   geom_bar(stat = "identity", fill = "skyblue") +
@@ -265,7 +248,7 @@ ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), 
 poverty_county_level_result <- aggregate(below_poverty_percentage ~ result, data = poverty_county_level, FUN = mean, na.rm = TRUE)
 
 # Create the bar chart
-ggplot(poverty_county_level_results, aes(x = reorder(result, below_poverty_percentage), y = below_poverty_percentage, fill = result)) +
+ggplot(poverty_county_level_result, aes(x = reorder(result, below_poverty_percentage), y = below_poverty_percentage, fill = result)) +
   geom_bar(stat = "identity", color = "black") +
   scale_fill_manual(values = c("democratic" = "blue", "republic" = "red")) +
   ylim(0, max(poverty_county_level_result$below_poverty_percentage) * 1.4) +
@@ -279,10 +262,8 @@ ggplot(poverty_county_level_results, aes(x = reorder(result, below_poverty_perce
   )
 ```
 
->>>>>>> 6e210a51a6a7f32cd6011c9487b79e41b71253a5
-
 ### **COVID-19 positive rate distribution in New York State**
-```{r}
+```{r, message= FALSE,warning = FALSE}
 #Load the dataset and merge with election results based on county
 voting_covid_detail <- read_csv("data/voting_covid_detail.csv")%>%
   janitor::clean_names()%>%

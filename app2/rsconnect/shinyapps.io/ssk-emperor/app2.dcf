@@ -1,0 +1,12 @@
+name: app2
+title: app2
+username: ssk-emperor
+account: ssk-emperor
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 13550135
+bundleId: 9481627
+url: https://ssk-emperor.shinyapps.io/app2/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

@@ -591,18 +591,50 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
   )</code></pre>
 <p><img src="Final-data_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
-<div id="poverty-distribution-in-new-york-state" class="section level3">
-<h3><strong>poverty distribution in New York State</strong></h3>
-<pre class="r"><code>ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
-  geom_bar(stat = &quot;identity&quot;, fill = &quot;steelblue&quot;) +
-  labs(
-    title = &quot;Poverty Rate by County&quot;,
-    x = &quot;County&quot;,
-    y = &quot;Poverty Rate (%)&quot;
-  ) +
+<div id="poverty-level-in-new-york-state" class="section level3">
+<h3><strong>Poverty level in New York State</strong></h3>
+<pre class="r"><code>#Load the dataset and merge with election results based on county
+poverty_county_level&lt;- read_excel(&quot;data/poverty_county_level__clean_v2.0.xlsx&quot;)%&gt;%
+  slice(-1)%&gt;%
+  slice(-1)%&gt;%
+  left_join(election_result,by=&quot;county&quot;)%&gt;%
+  select(county,result,below_poverty_percentage)
+
+#create barchart of poverty distribution
+ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;skyblue&quot;) +
+  coord_flip() +
+  ylim(0, max(poverty_county_level$below_poverty_percentage) * 1.4) +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+  labs(title = &quot;Poverty Rate by County&quot;,
+       x = &quot;County&quot;,
+       y = &quot;Poverty Rate &quot;) +
+  theme(axis.text.y = element_text(size = 6),
+        axis.text.x = element_text(size = 10))</code></pre>
 <p><img src="Final-data_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div
+id="poverty-level-distribution-in-new-york-state---republician-vs.-democratic"
+class="section level3">
+<h3><strong>Poverty level distribution in New York State - Republician
+vs. Democratic</strong></h3>
+<pre class="r"><code>#Create dataframe of average poverty rate in county --- Republician vs. Democratic
+poverty_county_level_result &lt;- aggregate(below_poverty_percentage ~ result, data = poverty_county_level, FUN = mean, na.rm = TRUE)
+
+# Create the bar chart
+ggplot(poverty_county_level_result, aes(x = reorder(result, below_poverty_percentage), y = below_poverty_percentage, fill = result)) +
+  geom_bar(stat = &quot;identity&quot;, color = &quot;black&quot;) +
+  scale_fill_manual(values = c(&quot;democratic&quot; = &quot;blue&quot;, &quot;republic&quot; = &quot;red&quot;)) +
+  ylim(0, max(poverty_county_level_result$below_poverty_percentage) * 1.4) +
+  geom_text(aes(label = round(below_poverty_percentage, 2)),)+
+  theme_minimal() +
+  labs(
+    title = &quot;Average Poverty Rate by Election Result&quot;,
+    x = &quot;&quot;,
+    y = &quot;Average Poverty Rate&quot;,
+    fill = &quot;Result&quot;
+  )</code></pre>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 </div>
 <div id="covid-19-positive-rate-distribution-in-new-york-state"
 class="section level3">
@@ -612,26 +644,19 @@ State</strong></h3>
 voting_covid_detail &lt;- read_csv(&quot;data/voting_covid_detail.csv&quot;)%&gt;%
   janitor::clean_names()%&gt;%
   left_join(election_result,by=&quot;county&quot;)%&gt;%
-  select(county,result,test_positive)</code></pre>
-<pre><code>## Rows: 62 Columns: 16
-## ── Column specification ──────────────────────
-## Delimiter: &quot;,&quot;
-## chr  (4): Test_Date, County, Geography, Report_Date
-## dbl (12): New_Positives, Cumulative_Number_of_Positives, Total_Number_of_Tes...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>#create barchart of test_positive distribution
+  select(county,result,test_positive)
+
+#create barchart of test_positive distribution
 ggplot(voting_covid_detail, aes(x = reorder(county, test_positive), y = test_positive)) +
   geom_bar(stat = &quot;identity&quot;, fill = &quot;skyblue&quot;) +
   coord_flip() +
   theme_minimal() +
-  labs(title = &quot;Healthcare Infrastructure Counts by County&quot;,
+  labs(title = &quot;COVID-19 positive rate by County&quot;,
        x = &quot;County&quot;,
-       y = &quot;Count of Hospitals&quot;) +
+       y = &quot;COVID-19 Test Positive Rate &quot;) +
   theme(axis.text.y = element_text(size = 6),
         axis.text.x = element_text(size = 10))</code></pre>
-<p><img src="Final-data_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 </div>
 <div
 id="covid-19-positive-rate-distribution-in-new-york-state---republician-vs.-democratic"
@@ -654,25 +679,7 @@ ggplot(test_positive_result, aes(x = reorder(result, test_positive), y = test_po
     y = &quot;Average Test-Positive Rate&quot;,
     fill = &quot;Result&quot;
   )</code></pre>
-<p><img src="Final-data_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-</div>
-<div id="head" class="section level1">
-<h1>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</h1>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>c7f93665931a6a1ec1caef092da6eee5a8c9865a</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 
 
