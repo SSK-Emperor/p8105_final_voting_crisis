@@ -1,0 +1,23 @@
+---
+Title: "**Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020 Election in New York State**"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## **Meet Our Team**
+
+Thank you so much for visiting our site! We are a team of graduate students at Columbia University’s Mailman School of Public Health, united by a shared passion for understanding the intersections of public health, data science, and democracy. Coming from diverse academic backgrounds and programs, we’ve joined forces to analyze the impact of COVID-19 on voting behavior during the historic 2020 election in New York State.
+
+
+Through this project, we aim to sharpen our skills in applied biostatistics, data visualization, and public health communication while contributing meaningful insights into how crises shape electoral processes. We hope our work not only informs but also inspires conversations about the resilience of democratic systems in the face of unprecedented challenges.
+
+### Tiancheng Shi
+<img src="image\zuiho.png" style="width:50%">
+
+### Li Jiang
+
+### Erin Ge
+
+### Yifei Chen
