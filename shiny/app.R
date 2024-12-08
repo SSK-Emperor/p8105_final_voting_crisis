@@ -8,7 +8,7 @@ library(dplyr)
 
 
 # Load data (adjust paths as needed)
-setwd("C:/Users/geshc/OneDrive - Columbia University Irving Medical Center/桌面/p8105_final_voting_crisis")
+setwd("C:/Users/jklas/OneDrive - Columbia University Irving Medical Center/DS/p8105_final_voting_crisiss")
 
 ny_counties <- st_read("shiny/data/Counties.shp") |> 
   select(-DOS_LL, -DOSLL_DATE)

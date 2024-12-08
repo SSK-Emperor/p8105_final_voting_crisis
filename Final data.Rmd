@@ -219,6 +219,20 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
   )
 ```
 
+<<<<<<< HEAD
+### **poverty distribution in New York State**
+```{r}
+ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(
+    title = "Poverty Rate by County",
+    x = "County",
+    y = "Poverty Rate (%)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+=======
 ### **Poverty level in New York State**
 ```{r}
 #Load the dataset and merge with election results based on county
@@ -265,6 +279,7 @@ ggplot(poverty_county_level_result, aes(x = reorder(result, below_poverty_percen
   )
 ```
 
+>>>>>>> 6e210a51a6a7f32cd6011c9487b79e41b71253a5
 
 ### **COVID-19 positive rate distribution in New York State**
 ```{r}
@@ -289,7 +304,7 @@ ggplot(voting_covid_detail, aes(x = reorder(county, test_positive), y = test_pos
 
 ### **COVID-19 positive rate distribution in New York State - Republician vs. Democratic**
 
-```{r}
+```{r,message= FALSE,warning = FALSE}
 #Create dataframe of average test_positive rate in county --- Republician vs. Democratic
 test_positive_result <- aggregate(test_positive ~ result, data = voting_covid_detail, FUN = mean, na.rm = TRUE)
 
@@ -308,12 +323,3 @@ ggplot(test_positive_result, aes(x = reorder(result, test_positive), y = test_po
   )
 ```
 
-
-
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> c7f93665931a6a1ec1caef092da6eee5a8c9865a
