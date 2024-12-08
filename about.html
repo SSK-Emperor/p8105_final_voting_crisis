@@ -16,7 +16,7 @@
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,6 +29,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -221,6 +224,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -228,6 +294,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -244,8 +320,23 @@ $(document).ready(function () {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="about.html">About</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="about.html">About Project</a>
+    </li>
+    <li>
+      <a href="about_us.html">About Us</a>
+    </li>
+    <li>
+      <a href="about_data.html">About data</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -254,6 +345,10 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="model.html">Model</a>
+</li>
+<li class="dropdown-header">R shiny</li>
+<li>
+  <a href="final_report.html">Final Report</a>
 </li>
 <li>
   <a href="https://github.com/SSK-Emperor/p8105_final_voting_crisis">
@@ -274,17 +369,8 @@ $(document).ready(function () {
 </div>
 
 
-<div id="about-the-project" class="section level3">
-<h3>About the Project</h3>
-</div>
-<div
-id="voting-in-crisis-analyzing-the-impact-of-covid-19-on-the-2020-election-in-new-york-state"
-class="section level3">
-<h3>Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020
-Election in New York State</h3>
-</div>
-<div id="welcome" class="section level3">
-<h3>Welcome</h3>
+<div id="about-the-project" class="section level2">
+<h2><strong>About the Project</strong></h2>
 <div style="text-align: center;">
 <img src="image/images.jpeg" alt="Image 1" style="width:50%;">
 <p>
@@ -326,7 +412,7 @@ New York State, check out these references and explore our
 findings：</p>
 </div>
 <div id="references" class="section level2">
-<h2>References</h2>
+<h2><strong>References</strong></h2>
 <ol style="list-style-type: decimal">
 <li><a href="https://time.com/5876599/election-2020-coronavirus/">Time
 Article on Election and COVID-19</a></li>
@@ -337,102 +423,12 @@ Article on Election Impact</a></li>
 href="https://coronavirus.health.ny.gov/covid-19-data-new-york">COVID-19
 Data in New York State</a></li>
 </ol>
-<div id="motivation" class="section level3">
-<h3>Motivation</h3>
-</div>
-<div id="meet-our-team" class="section level3">
-<h3>Meet Our Team</h3>
-<p>Thank you so much for visiting our site! We are a team of graduate
-students at Columbia University’s Mailman School of Public Health,
-united by a shared passion for understanding the intersections of public
-health, data science, and democracy. Coming from diverse academic
-backgrounds and programs, we’ve joined forces to analyze the impact of
-COVID-19 on voting behavior during the historic 2020 election in New
-York State.</p>
-<p>Through this project, we aim to sharpen our skills in applied
-biostatistics, data visualization, and public health communication while
-contributing meaningful insights into how crises shape electoral
-processes. We hope our work not only informs but also inspires
-conversations about the resilience of democratic systems in the face of
-unprecedented challenges.</p>
-</div>
-<div id="about-our-data" class="section level3">
-<h3>About Our data</h3>
-</div>
-<div id="data-dictionary" class="section level3">
-<h3>Data Dictionary</h3>
-</div>
-<div id="demographic-and-voting-data" class="section level3">
-<h3>Demographic and Voting Data</h3>
-<p>state: Name of the U.S. state for the corresponding data.</p>
-<p>county: Name of the county in New York State.</p>
-<p>age_group: Categorized age groups of voters (“18-24”, “25-44”,
-“45-64”, “65+”).</p>
-<p>gender: Gender of voters, either “Male” or “Female.”</p>
-<p>race: Racial demographics of voters (“White”, “Black”, “Asian”,
-“Hispanic”, “Other”). education_level: Education attainment level of
-voters (“Less than High School”, “High School Graduate”, “Some College”,
-“Bachelor’s Degree or Higher”).</p>
-<p>income_bracket: Income level of voters categorized by brackets
-(“&lt;$25,000”, “$25,000-$50,000”, “$50,000-$75,000”,
-“&gt;$75,000”).</p>
-<p>voter_turnout: Total number of voters who participated in the
-election within the demographic group.</p>
-<p>total_population: Total population of the demographic group.</p>
-<p>percent_turnout: Percentage of voters who participated in the
-election relative to the total population of the demographic group.</p>
-<p>margin_of_error: Statistical uncertainty for turnout estimates.</p>
-</div>
-<div id="socioeconomic-indicators" class="section level3">
-<h3>Socioeconomic Indicators</h3>
-<p>poverty_rate: Percentage of the population living below the poverty
-line.</p>
-<p>median_household_income: Median income of households in the
-state.</p>
-<p>unemployment_rate: Percentage of the labor force that is
-unemployed.</p>
-<p>gini_index: Measure of income inequality within the state (0 =
-perfect equality, 1 = maximum inequality).</p>
-<p>healthcare_access_rate: Percentage of residents with access to
-healthcare services.</p>
-</div>
-<div id="health-facilities" class="section level3">
-<h3>Health Facilities</h3>
-<p>facility_name: Name of the health facility.</p>
-<p>facility_type: Type of the facility (value is either “Hospital,”
-“Clinic” or “Urgent Care”).</p>
-<p>latitude: Latitude coordinate of the facility’s location.</p>
-<p>longitude: Longitude coordinate of the facility’s location.</p>
-<p>bed_count: Total number of beds available at the facility.</p>
-<p>covid_capacity: Capacity for treating COVID-19 patients.</p>
-<p>staff_count: Total number of healthcare staff employed.</p>
-</div>
-<div id="election-results" class="section level3">
-<h3>Election Results</h3>
-<p>candidate: Name of the candidate in the 2020 election.</p>
-<p>party: Political party of the candidate (values is either “Democrat”
-or “Republican”).</p>
-<p>votes: Total number of votes received by the candidate.</p>
-<p>percent_votes: Percentage of total votes received by the candidate in
-the county.</p>
-<p>absentee_votes: Total number of absentee votes received by the
-candidate.</p>
-<p>in_person_votes: Total number of in-person votes received by the
-candidate.</p>
-</div>
-<div id="covid-19-data" class="section level3">
-<h3>COVID-19 Data</h3>
-<p>cases: Total number of confirmed COVID-19 cases in 2020.</p>
-<p>deaths: Total number of COVID-19-related deaths in 2020.</p>
-<p>cases_per_100k: COVID-19 cases per 100,000 residents.</p>
-<p>deaths_per_100k: COVID-19 deaths per 100,000 residents.</p>
-<p>testing_rate: Number of COVID-19 tests conducted per 100,000
-residents.</p>
-</div>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -465,6 +461,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

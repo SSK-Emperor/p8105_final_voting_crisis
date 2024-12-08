@@ -11,12 +11,12 @@
 
 
 
-<title>Data</title>
+<title>Exploratory Data Analysis</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/yeti.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -29,7 +29,11 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
@@ -218,7 +222,73 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
 
 
 
@@ -228,6 +298,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -244,8 +324,23 @@ $(document).ready(function () {
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li>
-  <a href="about.html">About</a>
+        <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    About
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="about.html">About Project</a>
+    </li>
+    <li>
+      <a href="about_us.html">About Us</a>
+    </li>
+    <li>
+      <a href="about_data.html">About data</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -254,6 +349,10 @@ $(document).ready(function () {
 </li>
 <li>
   <a href="model.html">Model</a>
+</li>
+<li class="dropdown-header">R shiny</li>
+<li>
+  <a href="final_report.html">Final Report</a>
 </li>
 <li>
   <a href="https://github.com/SSK-Emperor/p8105_final_voting_crisis">
@@ -268,49 +367,52 @@ $(document).ready(function () {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Data</h1>
+
+<h1 class="title toc-ignore"><strong>Exploratory Data
+Analysis</strong></h1>
 
 </div>
 
 
-<pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## ── Attaching core tidyverse packages ───────────────────
-## ✔ dplyr     1.1.4     ✔ readr     2.1.5
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-## ✔ purrr     1.0.2     
-## ── Conflicts ────────────────── tidyverse_conflicts() ──
-## ✖ dplyr::filter() masks stats::filter()
-## ✖ dplyr::lag()    masks stats::lag()
-## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
-<pre class="r"><code>library(ggplot2)
-library(dplyr)
-library(stringr)</code></pre>
-<pre class="r"><code>covid_19 = read.csv(&quot;data/New_York_State_Statewide_COVID-19_Testing__Archived__20241205.csv&quot;)</code></pre>
-<pre class="r"><code>covid_19_NY = filter(covid_19,
+<div id="data-cleanning" class="section level3">
+<h3><strong>Data Cleanning</strong></h3>
+<div id="voting-result-and-covid-19" class="section level4">
+<h4>Voting result and Covid-19</h4>
+<pre class="r"><code>covid_19 = read.csv(&quot;data/New_York_State_Statewide_COVID-19_Testing__Archived__20241205.csv&quot;)
+covid_19_NY = filter(covid_19,
                      Test.Date == &quot;11/03/2020&quot; &amp;
-                       Geography == &quot;COUNTY&quot;)</code></pre>
-<pre class="r"><code>covid_19_fatality = read.csv(&quot;data/New_York_State_Statewide_COVID-19_Fatalities_by_County_20241205.csv&quot;)</code></pre>
-<pre class="r"><code>covid_19_fatality_NY = filter(covid_19_fatality,
-                     Report.Date == &quot;11/03/2020&quot;)</code></pre>
-<pre class="r"><code>election_result = read.csv(&quot;data/election_result_NY_2020.csv&quot;)</code></pre>
-<pre class="r"><code>df = left_join(covid_19_NY, election_result,by = &quot;County&quot;)
-df = left_join(df, covid_19_fatality_NY, by = &quot;County&quot;)</code></pre>
-<pre class="r"><code>write.csv(df, &quot;data/voting_covid_detail.csv&quot;, row.names = FALSE)</code></pre>
-<p>*Socioeconomic indicator—poverty</p>
+                     Geography == &quot;COUNTY&quot;)
+covid_19_fatality = read.csv(&quot;data/New_York_State_Statewide_COVID-19_Fatalities_by_County_20241205.csv&quot;)
+covid_19_fatality_NY = filter(covid_19_fatality,
+                     Report.Date == &quot;11/03/2020&quot;)
+election_result = read.csv(&quot;data/election_result_NY_2020.csv&quot;)
+election_covid = left_join(covid_19_NY, election_result,by = &quot;County&quot;)
+election_covid = left_join(election_covid, covid_19_fatality_NY, by = &quot;County&quot;)</code></pre>
+</div>
+<div id="socioeconomic-indicatorpoverty" class="section level4">
+<h4>Socioeconomic indicator—poverty</h4>
 <pre class="r"><code>#Load dataset
 poverty_level &lt;- read.csv(&quot;data/2000_socioeconomic_indicator_poverty.csv&quot;) %&gt;%
-  janitor::clean_names()</code></pre>
-<pre class="r"><code>#Extract the first column and use it as a dataframe
+  janitor::clean_names()
+
+#Extract the first column and use it as a dataframe
 first_column &lt;- data.frame(poverty_level$label_grouping)%&gt;%
-  filter(str_ends(poverty_level$label_grouping, &quot;New York&quot;))</code></pre>
-<pre class="r"><code>#keeping all estimate as a seprate dataframe
+  filter(str_ends(poverty_level$label_grouping, &quot;New York&quot;))
+
+#keeping all estimate as a seprate dataframe
 df &lt;- poverty_level%&gt;%
-  filter(str_ends(label_grouping,&quot;Estimate&quot;))</code></pre>
-<pre class="r"><code>#Binding those two into one dataframe
+  filter(str_ends(label_grouping,&quot;Estimate&quot;))
+
+#Binding those two into one dataframe
 poverty_county_level &lt;- cbind(first_column, df) %&gt;%
   mutate(
     total = as.numeric(gsub(&quot;,&quot;, &quot;&quot;, total)),
@@ -327,26 +429,23 @@ poverty_county_level &lt;- cbind(first_column, df) %&gt;%
   ) %&gt;%
   select(-label_grouping)%&gt;%
   slice(-1) </code></pre>
-<p>*2020 voting demographic—age</p>
+</div>
+<div id="voting-demographicage" class="section level4">
+<h4>2020 voting demographic—age</h4>
 <pre class="r"><code>#load the dataset
 voting_age &lt;- read_csv(&quot;data/2000_voting_demographic_age.csv&quot;)%&gt;%
-  janitor::clean_names()</code></pre>
-<pre><code>## Rows: 189 Columns: 6
-## ── Column specification ────────────────────────────────
-## Delimiter: &quot;,&quot;
-## chr (6): Label (Grouping), Total:, Total:!!18 to 29 years, Total:!!30 to 44 ...
-## 
-## ℹ Use `spec()` to retrieve the full column specification for this data.
-## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>#Extract the first column and use it as a dataframe
+  janitor::clean_names()
+
+#Extract the first column and use it as a dataframe
 first_column_age &lt;- data.frame(voting_age$label_grouping)%&gt;%
   filter(str_ends(voting_age$label_grouping, &quot;New York&quot;))%&gt;%
    rename(
     county = voting_age.label_grouping
   ) %&gt;%
     mutate(
-    county = sub(&quot; County, New York$&quot;, &quot;&quot;, county))</code></pre>
-<pre class="r"><code>#keeping all estimate as a seprate dataframe
+    county = sub(&quot; County, New York$&quot;, &quot;&quot;, county))
+
+#keeping all estimate as a seprate dataframe
 
 df_age &lt;- voting_age%&gt;%
   filter(str_ends(label_grouping,&quot;Estimate&quot;))%&gt;%
@@ -359,13 +458,144 @@ df_age &lt;- voting_age%&gt;%
   mutate(
     below_30_percent = (total_18_to_29_years)/total*100,
     above_30_percent = (total_30_to_44_years+total_45_to_64_years+total_65_years_and_over)/total*100,
-    above_65_percent = total_65_years_and_over/total*100)</code></pre>
-<pre class="r"><code>#Binding those two into one dataframe
+    above_65_percent = total_65_years_and_over/total*100)
+
+#Binding those two into one dataframe
 voting_age_county_level &lt;- cbind(first_column_age, df_age)%&gt;%
   slice(-1)</code></pre>
+</div>
+</div>
+<div id="hospital-counts-in-new-york-states" class="section level3">
+<h3><strong>hospital counts in New York States</strong></h3>
+<pre class="r"><code>#load the dataset
+health_facility_count &lt;- read_excel(&quot;data/2020_health_facility_count.xlsx&quot;)
+
+#create barchart of hospital distribution
+ggplot(health_facility_count, aes(x = reorder(county, count), y = count)) +
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;skyblue&quot;) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = &quot;Healthcare Infrastructure Counts by County&quot;,
+       x = &quot;County&quot;,
+       y = &quot;Count of Hospitals&quot;) +
+  theme(axis.text.y = element_text(size = 6),
+        axis.text.x = element_text(size = 10))</code></pre>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="hospital-counts-in-new-york-states-republician-vs.-democratic"
+class="section level3">
+<h3><strong>hospital counts in New York States Republician
+vs. Democratic</strong></h3>
+<pre class="r"><code>#Getting election results in binary version
+election_result &lt;- election_result%&gt;%
+  janitor::clean_names()%&gt;%
+  mutate(
+    result = if_else(democratic_percent &gt; republician_percent, &quot;democratic&quot;, &quot;republic&quot;))%&gt;%
+  select(county,result)
+
+#merge tables to get hospital count classified by rep vs. demo
+election_result_hospital_count &lt;- merge(election_result, health_facility_count, by = &quot;county&quot;, all.x = TRUE)
+
+#create barchart for hospital count based on election results
+count_result &lt;- aggregate(count ~ result, data = election_result_hospital_count, FUN = sum, na.rm = TRUE)
+
+ggplot(count_result, aes(x = reorder(result, count), y = count, fill = result)) +
+  geom_bar(stat = &quot;identity&quot;, color = &quot;black&quot;) +
+  scale_fill_manual(values = c(&quot;democratic&quot; = &quot;blue&quot;, &quot;republic&quot; = &quot;red&quot;)) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = &quot;Hospital Counts by County --- democratic vs. republic&quot;,
+       x = &quot;&quot;,
+       y = &quot;Count of Healthcare Infrastructure&quot;,
+       fill = &quot;Result&quot;)</code></pre>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="voting-age-distribution-in-new-york-state"
+class="section level3">
+<h3><strong>voting age distribution in New York State</strong></h3>
+<pre class="r"><code>#load the dataset
+voting_age_county_level_clean &lt;- read_excel(&quot;data/voting_age_county_level_clean_v2.0.xlsx&quot;)%&gt;%
+  select(county,total_18_to_29_years,total_30_to_44_years,total_45_to_64_years,total_65_years_and_over)
+
+#create long dataframe
+long_data &lt;- voting_age_county_level_clean %&gt;%
+  pivot_longer(
+    cols = starts_with(&quot;total_&quot;), 
+    names_to = &quot;age_group&quot;,       
+    values_to = &quot;population&quot;)
+
+#create barchart
+ggplot(long_data, aes(x = reorder(county, population), y = population, fill = age_group)) +
+  geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) +
+  coord_flip() +  
+  facet_wrap(~age_group, scales = &quot;free_x&quot;) + 
+  theme_minimal() +
+  labs(
+    title = &quot;Population Distribution by Age Group and County&quot;,
+    x = &quot;County&quot;,
+    y = &quot;Population Count&quot;
+  ) +
+  theme(
+    strip.text = element_text(size = 7, face = &quot;bold&quot;), 
+    axis.text.y = element_text(size = 6),  
+    axis.text.x = element_text(size = 10),  
+    plot.title = element_text(size = 14, face = &quot;bold&quot;)
+  )</code></pre>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div
+id="voting-age-distribution-in-new-york-state-republician-vs.-democratic"
+class="section level3">
+<h3><strong>voting age distribution in New York State Republician
+vs. Democratic</strong></h3>
+<pre class="r"><code>#merge tables to get age_distribution classified by rep vs. demo
+election_result_voting_age_distribution &lt;- merge(election_result, voting_age_county_level_clean, by = &quot;county&quot;, all.x = TRUE)
+
+#merge dataset for age distribution for democratic vs. republican
+voting_age_result_1 &lt;- aggregate(total_18_to_29_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_2 &lt;- aggregate(total_30_to_44_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_3 &lt;- aggregate(total_45_to_64_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_4 &lt;- aggregate(total_65_years_and_over ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_df &lt;- Reduce(function(x, y) merge(x, y, by = &quot;result&quot;, all.x = TRUE), 
+                               list(voting_age_result_1, voting_age_result_2, voting_age_result_3, voting_age_result_4))
+
+#create barchart for voting age distribution based on election results
+voting_age_long &lt;- pivot_longer(
+  voting_age_result_df,
+  cols = starts_with(&quot;total_&quot;),
+  names_to = &quot;age_group&quot;,
+  values_to = &quot;population&quot;
+)
+
+# Create the bar chart
+ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
+  geom_bar(stat = &quot;identity&quot;, position = &quot;stack&quot;, color = &quot;black&quot;) +
+  theme_minimal() +
+  labs(
+    title = &quot;Population Distribution by Voting Age and Result&quot;,
+    x = &quot;Result&quot;,
+    y = &quot;Population Count&quot;,
+    fill = &quot;Age Group&quot;
+  ) +
+  scale_fill_brewer(palette = &quot;Set3&quot;) + 
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = &quot;bold&quot;),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )</code></pre>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -397,7 +627,41 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("hide" === "show");
+});
+</script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

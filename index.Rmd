@@ -2,26 +2,22 @@
 title: "**Voting in Crisis: Analyzing the Impact of COVID-19 on the 2020 Election in New York State**"
 output: 
   html_document:
-    code_folding: hide
+    toc: true
+    toc_float: true
 ---
 
+## **Welcome**
 
-```{r}
-library(tidyverse)
-#library(urbnmapr)
-```
 
----
+### [**Screen Casting**](website here)
 
-### Welcome
 
-### Election detail of 2020 in New York State
+### [**Data Source**](about_data.html)
 
-```{r}
-NY = read.csv("data/voting_covid_detail.csv")
-```
 
-```{r}
+### [**Model**](model.html)
 
-```
+
+### [**Final Report**](final_report.html)
+
 
