@@ -45,7 +45,6 @@ ggplot(model1_data, aes(x = pred, y = resid)) +
        y = "residual value") +
   geom_smooth()
 ```
-*Formula: republican_percent∼below_poverty_percentage+below_30_percent+above_65_percent+count
 
 Description: This baseline linear regression model evaluates the relationship between Republican voting percentages and key demographic factors at the county level, excluding any variables related to COVID-19. These predictors include poverty levels, the proportion of the voting- population below 30 years old, the proportion of the voting- populationabove 65 years old, and total population count in the county.
 
@@ -69,7 +68,6 @@ ggplot(model2_data, aes(x = pred, y = resid)) +
        y = "residuals")+
   geom_smooth()
 ```
-Formula: republican_percent∼below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive
 
 Description: This model extends reduced Model by including the variable (Test_Positive), representing COVID-19 test positivity rates at the county level. This addition captures the potential influence of the pandemic on voting behaviors.
 

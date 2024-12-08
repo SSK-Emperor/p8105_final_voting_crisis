@@ -17,6 +17,7 @@ navbar:
     - text: Model
       href: model.html
     - text: R shiny
+      href: https://ssk-emperor.shinyapps.io/app2/
     - text: Final Report
       href: final_report.html
     - icon: fa-github fa-lg
