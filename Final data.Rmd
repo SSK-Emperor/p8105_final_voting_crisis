@@ -251,7 +251,7 @@ ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), 
 poverty_county_level_result <- aggregate(below_poverty_percentage ~ result, data = poverty_county_level, FUN = mean, na.rm = TRUE)
 
 # Create the bar chart
-ggplot(poverty_county_level_results, aes(x = reorder(result, below_poverty_percentage), y = below_poverty_percentage, fill = result)) +
+ggplot(poverty_county_level_result, aes(x = reorder(result, below_poverty_percentage), y = below_poverty_percentage, fill = result)) +
   geom_bar(stat = "identity", color = "black") +
   scale_fill_manual(values = c("democratic" = "blue", "republic" = "red")) +
   ylim(0, max(poverty_county_level_result$below_poverty_percentage) * 1.4) +
