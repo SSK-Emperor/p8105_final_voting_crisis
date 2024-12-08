@@ -17,8 +17,10 @@ Through this project, we aim to sharpen our skills in applied biostatistics, dat
 <img src="image\zuiho.png" style="width:50%">
 
 ### Li Jiang
+<img src="image\li_jiang.jpg" style="width:50%">
 
 ### Erin Ge
 <img src="image\erin.jpg" style="width:50%">
 
 ### Yifei Chen
+<img src="image\yifei_chen.jpg" style="width:50%">

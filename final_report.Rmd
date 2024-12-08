@@ -7,4 +7,81 @@ output:
     code_folding: hide
 ---
 
+### Project Members:
+Li Jiang(lj2607), Yifei Chen(yc4587), Yue Ge(yg3040), Tiancheng Shi(ts3593)
 
+### Topic
+  The 2020 election in New York State highlights the profound impact of public health, socioeconomic disparities, and healthcare infrastructure on voter behavior and electoral outcomes during a crisis.
+
+### Motivation
+  The 2020 election unfolded during the unprecedented COVID-19 pandemic, which profoundly affected voting behavior nationwide. In New York State, home to over 19.3 million residents, the pandemic had a dramatic impact. Over 1.5 million COVID-19 cases and more than 35,000 deaths were reported by the end of 2020, creating a public health crisis that discouraged in-person voting and shifted the focus toward absentee ballots. In the 2020 general election, New York saw a record 45% increase in absentee ballot usage compared to previous years, with more than 2 million absentee ballots cast out of a total 8.6 million votes.
+Our team seeks to analyze how these extraordinary circumstances shaped voter turnout, voting methods, and participation trends across New York State. By integrating demographic data, COVID-19 statistics, and election results, we aim to uncover how New Yorkers adapted to these challenges and what it reveals about the resilience of democracy in the face of crisis. Explore our website to learn more about the intersection of public health and electoral processes during one of the most transformative elections in history. 
+
+### Related Work
+  We are a team of graduate students at Columbia University’s Mailman School of Public Health, united by a shared passion for understanding the intersections of public health, data science, and democracy. Coming from diverse academic backgrounds and programs, we’ve joined forces to analyze the impact of COVID-19 on voting behavior during the historic 2020 election in New York State.
+  
+  Through this project, we aim to sharpen our skills in applied biostatistics, data visualization, and public health communication while contributing meaningful insights into how crises shape electoral processes. We hope our work not only informs but also inspires conversations about the resilience of democratic systems in the face of unprecedented challenges.
+
+### Introduction
+  The 2020 election in New York State occurred amidst the global COVID-19 pandemic, a crisis that reshaped voting behavior, voter turnout, and electoral outcomes. This report analyzes how healthcare infrastructure, socioeconomic disparities, and pandemic outcomes influenced voting patterns across New York counties. Using demographic, healthcare, election, and pandemic-related data, we examine the relationships among these factors to derive insights into public health and democracy.
+
+### Data and Methodology
+
+#### Key Data Sources
+
+Demographics: Age, race, income, education, and voting population characteristics.
+
+Healthcare Access: Counts of healthcare facilities and services across counties.
+
+COVID-19 Impact: Cases, deaths, and positivity rates by county.
+
+Election Data: Absentee vs. in-person voting, and Republican vs. Democratic voting percentages.
+
+Socioeconomic Indicators: Poverty rate, unemployment rate, and income inequality (Gini Index).
+
+### Methods
+
+Visualization: Bar plots, stacked charts, and violin plots to compare healthcare infrastructure, demographic patterns, and socioeconomic factors by county and political leaning.
+
+Regression Analysis: Baseline and extended models evaluate the influence of socioeconomic and COVID-19 factors on Republican voting percentages.
+
+Model Validation: Residual analysis and RMSE comparisons assess model accuracy and predictive power.
+
+### Findings
+
+#### Healthcare Infrastructure
+Urban counties like Kings and New York reported the highest healthcare facility counts, reflecting better healthcare access.
+Adjusted analyses highlighted gaps in healthcare access in rural areas despite smaller population densities, emphasizing inequalities in infrastructure.
+
+#### Demographics and Electoral Trends
+Younger populations dominated urban counties, while older populations were concentrated in rural areas. Urban counties with diverse demographics leaned Democratic, while Republican-leaning counties had older, less diverse populations.
+Democratic counties also showed higher voter engagement among younger age groups compared to Republican counties.
+#### Socioeconomic Inequities
+Counties with higher poverty rates, such as the Bronx, faced greater barriers to in-person voting, resulting in increased absentee ballot usage. Poverty and education levels emerged as significant predictors of Republican voting percentages in regression models.
+Including COVID-19 positivity rates improved model predictions, revealing that the pandemic influenced voting behavior in low-income areas.
+
+#### Impact of COVID-19
+COVID-19 positivity rates were associated with shifts in voting preferences. Counties heavily impacted by the pandemic showed higher absentee voting rates and changes in partisan voting patterns.
+Residual analysis and RMSE validation confirmed that including pandemic-related variables enhanced model performance.
+Discussion and Challenges
+
+#### Limitations
+Data Constraints: Data aggregation at the county level limits granular insights into individual or community-level behaviors.
+Causal Inference: The analysis identifies correlations but cannot definitively establish causation between variables like COVID-19 positivity rates and voting outcomes.
+Exclusion of Qualitative Factors: Political campaigns, voter sentiment, and local policies are not accounted for, which may influence voting behavior.
+
+#### Challenges
+Data Integration: Combining diverse datasets posed challenges in ensuring compatibility and consistency.
+Pandemic-Driven Variability: COVID-19 introduced unprecedented changes in voter behavior, complicating comparisons to prior elections.
+
+#### Implications
+Public Health: The pandemic underscored the need for robust healthcare infrastructure, particularly in rural areas, to ensure equitable access during crises.
+
+Elections: Flexible voting methods, such as absentee ballots, proved critical in maintaining voter participation during emergencies. Policymakers should prioritize expanding access to such methods in future elections.
+
+Socioeconomic Equity: Addressing poverty and healthcare access disparities can reduce barriers to electoral participation, fostering a more inclusive democracy.
+
+### Conclusion
+The findings emphasize the profound intersection of public health, socioeconomic status, and electoral processes. Counties with robust healthcare systems and lower poverty rates experienced higher voter turnout and greater resilience during the pandemic. Conversely, underserved areas faced significant challenges, highlighting the need for targeted investments in healthcare infrastructure and socioeconomic development.
+
+The 2020 election demonstrated the adaptability of democracy in the face of crisis but also exposed systemic inequities that hinder participation. Policymakers should leverage these insights to design public health and electoral systems that are resilient, inclusive, and equitable. Strengthening healthcare infrastructure and addressing socioeconomic disparities are critical steps toward safeguarding democracy during future public health crises.
