@@ -1,11 +1,13 @@
 ---
-title: "Data"
+title: "**Exploratory Data Analysis**"
 output: 
   html_document:
+    toc: true
+    toc_float: true
     code_folding: hide
 ---
 
-```{r}
+```{r,echo = FALSE,message= FALSE, warning = FALSE}
 library(tidyverse)
 library(ggplot2)
 library(dplyr)
@@ -13,55 +15,36 @@ library(stringr)
 library(readxl)
 ```
 
+### **Data Cleanning**
+
+#### Voting result and Covid-19
 ```{r}
 covid_19 = read.csv("data/New_York_State_Statewide_COVID-19_Testing__Archived__20241205.csv")
-```
-
-```{r}
 covid_19_NY = filter(covid_19,
                      Test.Date == "11/03/2020" &
                      Geography == "COUNTY")
-```
-
-```{r}
 covid_19_fatality = read.csv("data/New_York_State_Statewide_COVID-19_Fatalities_by_County_20241205.csv")
-```
-
-```{r}
 covid_19_fatality_NY = filter(covid_19_fatality,
                      Report.Date == "11/03/2020")
-```
-
-```{r}
 election_result = read.csv("data/election_result_NY_2020.csv")
+election_covid = left_join(covid_19_NY, election_result,by = "County")
+election_covid = left_join(election_covid, covid_19_fatality_NY, by = "County")
 ```
 
-```{r}
-df = left_join(covid_19_NY, election_result,by = "County")
-df = left_join(df, covid_19_fatality_NY, by = "County")
-```
-
-*Socioeconomic indicator---poverty
+#### Socioeconomic indicator---poverty
 ```{r}
 #Load dataset
 poverty_level <- read.csv("data/2000_socioeconomic_indicator_poverty.csv") %>%
   janitor::clean_names()
-```
 
-
-```{r}
 #Extract the first column and use it as a dataframe
 first_column <- data.frame(poverty_level$label_grouping)%>%
   filter(str_ends(poverty_level$label_grouping, "New York"))
-```
 
-```{r}
 #keeping all estimate as a seprate dataframe
 df <- poverty_level%>%
   filter(str_ends(label_grouping,"Estimate"))
-```
 
-```{r}
 #Binding those two into one dataframe
 poverty_county_level <- cbind(first_column, df) %>%
   mutate(
@@ -81,16 +64,12 @@ poverty_county_level <- cbind(first_column, df) %>%
   slice(-1) 
 ```
 
-
-
-*2020 voting demographic---age
-```{r}
+#### 2020 voting demographic---age
+```{r, message= FALSE,warning = FALSE}
 #load the dataset
 voting_age <- read_csv("data/2000_voting_demographic_age.csv")%>%
   janitor::clean_names()
-```
 
-```{r}
 #Extract the first column and use it as a dataframe
 first_column_age <- data.frame(voting_age$label_grouping)%>%
   filter(str_ends(voting_age$label_grouping, "New York"))%>%
@@ -99,9 +78,7 @@ first_column_age <- data.frame(voting_age$label_grouping)%>%
   ) %>%
     mutate(
     county = sub(" County, New York$", "", county))
-```
 
-```{r}
 #keeping all estimate as a seprate dataframe
 
 df_age <- voting_age%>%
@@ -116,22 +93,17 @@ df_age <- voting_age%>%
     below_30_percent = (total_18_to_29_years)/total*100,
     above_30_percent = (total_30_to_44_years+total_45_to_64_years+total_65_years_and_over)/total*100,
     above_65_percent = total_65_years_and_over/total*100)
-```
 
-```{r}
 #Binding those two into one dataframe
 voting_age_county_level <- cbind(first_column_age, df_age)%>%
   slice(-1)
 ```
 
-
-*Create barchart for hospital_count_dataset --- used as illustration of dataset
+### **hospital counts in New York States**
 ```{r}
 #load the dataset
 health_facility_count <- read_excel("data/2020_health_facility_count.xlsx")
-```
 
-```{r}
 #create barchart of hospital distribution
 ggplot(health_facility_count, aes(x = reorder(county, count), y = count)) +
   geom_bar(stat = "identity", fill = "skyblue") +
@@ -144,7 +116,7 @@ ggplot(health_facility_count, aes(x = reorder(county, count), y = count)) +
         axis.text.x = element_text(size = 10))
 ```
 
-*Create barchart for hospoital count in county -republican vs. democratic
+### **hospital counts in New York States Republician vs. Democratic**
 ```{r}
 #Getting election results in binary version
 election_result <- election_result%>%
@@ -155,9 +127,7 @@ election_result <- election_result%>%
 
 #merge tables to get hospital count classified by rep vs. demo
 election_result_hospital_count <- merge(election_result, health_facility_count, by = "county", all.x = TRUE)
-```
 
-```{r}
 #create barchart for hospital count based on election results
 count_result <- aggregate(count ~ result, data = election_result_hospital_count, FUN = sum, na.rm = TRUE)
 
@@ -170,17 +140,14 @@ ggplot(count_result, aes(x = reorder(result, count), y = count, fill = result)) 
        x = "",
        y = "Count of Healthcare Infrastructure",
        fill = "Result")
-
 ```
 
-*Create barchart for voting_age dataset--- used as illustration of dataset
+### **voting age distribution in New York State**
 ```{r}
 #load the dataset
 voting_age_county_level_clean <- read_excel("data/voting_age_county_level_clean_v2.0.xlsx")%>%
   select(county,total_18_to_29_years,total_30_to_44_years,total_45_to_64_years,total_65_years_and_over)
-```
 
-```{r}
 #create long dataframe
 long_data <- voting_age_county_level_clean %>%
   pivot_longer(
@@ -207,13 +174,11 @@ ggplot(long_data, aes(x = reorder(county, population), y = population, fill = ag
   )
 ```
 
-*Create barchart for voting_age_distribution -republican vs. democratic
+### **voting age distribution in New York State Republician vs. Democratic**
 ```{r}
 #merge tables to get age_distribution classified by rep vs. demo
 election_result_voting_age_distribution <- merge(election_result, voting_age_county_level_clean, by = "county", all.x = TRUE)
-```
 
-```{r}
 #merge dataset for age distribution for democratic vs. republican
 voting_age_result_1 <- aggregate(total_18_to_29_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
 
@@ -225,9 +190,7 @@ voting_age_result_4 <- aggregate(total_65_years_and_over ~ result, data = electi
 
 voting_age_result_df <- Reduce(function(x, y) merge(x, y, by = "result", all.x = TRUE), 
                                list(voting_age_result_1, voting_age_result_2, voting_age_result_3, voting_age_result_4))
-```
 
-```{r}
 #create barchart for voting age distribution based on election results
 voting_age_long <- pivot_longer(
   voting_age_result_df,
@@ -255,4 +218,10 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
     legend.text = element_text(size = 10)
   )
 ```
+
+
+
+
+
+
 

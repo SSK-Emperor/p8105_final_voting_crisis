@@ -1,6 +1,9 @@
 ---
+title: "Model of Republician voting rate"
 output: 
   html_document:
+    toc: true
+    toc_float: true
     code_folding: hide
 ---
 
@@ -28,54 +31,42 @@ final_data = final_data %>% reduce(left_join, by = "county")
 
 ### Linear model of Trump without Covid factor
 
-```{r}
+```{r,message= FALSE, warning = FALSE}
 model1 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = final_data)
-```
 
-```{r}
-summary(model1)
-```
-
-```{r}
 model1_data <- final_data |>
   add_predictions(model1) |>
   add_residuals(model1)
-```
 
-```{r}
 ggplot(model1_data, aes(x = pred, y = resid)) +
   geom_point(alpha = 0.2) +
+  labs(title = "Predict compare to residuls without considering Covid",
+       x = "Predict value",
+       y = "residuals value") +
   geom_smooth()
 ```
 
 ### Linear model of Trump with Covid factor
-```{r}
+```{r,message= FALSE, warning = FALSE}
 model2 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive, data = final_data)
-```
 
-```{r}
-summary(model2)
-```
-
-```{r}
 model2_data <- final_data |>
   add_predictions(model2) |>
   add_residuals(model2)
-```
 
-```{r}
 ggplot(model2_data, aes(x = pred, y = resid)) +
   geom_point(alpha = 0.2) +
+  labs(title = "Predict compare to residuls when considering Covid",
+       x = "Predict value",
+       y = "residuals value")+
   geom_smooth()
 ```
 
-### Compare the two model
+### Comparasion of two model
 ```{r}
 compare = crossv_mc(final_data, 100) |> mutate(train = map(train, as_tibble),
                                       test = map(test, as_tibble))
-```
 
-```{r}
 compare = compare |> mutate(
     model1 = map(train, \(df) lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = df)),
     model2 = map(train, \(df) lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive, data = df)),
@@ -84,9 +75,7 @@ compare = compare |> mutate(
     rmse_model2 = 
       map2_dbl(model2, test, \(mod, df) rmse(model = mod, data = df))
 )
-```
 
-```{r}
 compare |> 
   select(starts_with("rmse")) |> 
   pivot_longer(
@@ -97,4 +86,6 @@ compare |>
   mutate(model = fct_inorder(model)) |> 
   ggplot(aes(x = model, y = rmse)) + geom_violin()
 ```
+
+
 
