@@ -52,33 +52,41 @@ ui <- fluidPage(
 
 # Server
 server <- function(input, output, session) {
-  output$map <- renderLeaflet({
-    req(input$color_var)
-    
-    # Dynamically generate color palette
-    palette <- colorNumeric(
-      palette = "viridis", 
-      domain = map_data[[input$color_var]]
-    )
-    
-    # Create map
-    leaflet(map_data) %>%
-      addProviderTiles(providers$CartoDB.Positron) %>%
-      addPolygons(
-        fillColor = ~palette(map_data[[input$color_var]]),
-        fillOpacity = input$opacity,
-        color = "black",
-        weight = 1,
-        label = ~paste0(input$color_var, ": ", map_data[[input$color_var]])
-      ) %>%
-      addLegend(
-        "bottomright",
-        pal = palette,
-        values = ~map_data[[input$color_var]],
-        title = input$color_var,
-        opacity = 1
+  server <- function(input, output, session) {
+    output$map <- renderLeaflet({
+      req(input$color_var)
+      
+      # Dynamically generate color palette
+      palette <- colorNumeric(
+        palette = "viridis", 
+        domain = map_data[[input$color_var]]
       )
-  })
+      
+      # Create map with shapefile layer
+      leaflet(data = map_data) %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
+        addPolygons(
+          fillColor = ~palette(map_data[[input$color_var]]),
+          fillOpacity = input$opacity,
+          color = "black",
+          weight = 1,
+          label = ~paste0(input$color_var, ": ", map_data[[input$color_var]]),
+          group = "Shapefile Layer"
+        ) %>%
+        addLegend(
+          "bottomright",
+          pal = palette,
+          values = ~map_data[[input$color_var]],
+          title = input$color_var,
+          opacity = 1
+        ) %>%
+        addLayersControl(
+          overlayGroups = c("Shapefile Layer"),
+          options = layersControlOptions(collapsed = FALSE)
+        )
+    })
+  }
+  
 }
 
 # Run the app
