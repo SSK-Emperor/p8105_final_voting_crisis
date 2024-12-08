@@ -6,9 +6,6 @@ output:
     toc_float: true
 ---
 
-## **Welcome**
-
-
 ### [**Screen Casting**](website here)
 
 

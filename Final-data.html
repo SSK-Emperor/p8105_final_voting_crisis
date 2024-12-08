@@ -591,6 +591,19 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
   )</code></pre>
 <p><img src="Final-data_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
+<div id="poverty-distribution-in-new-york-state" class="section level3">
+<h3><strong>poverty distribution in New York State</strong></h3>
+<pre class="r"><code>ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
+  geom_bar(stat = &quot;identity&quot;, fill = &quot;steelblue&quot;) +
+  labs(
+    title = &quot;Poverty Rate by County&quot;,
+    x = &quot;County&quot;,
+    y = &quot;Poverty Rate (%)&quot;
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))</code></pre>
+<p><img src="Final-data_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
 
 
 

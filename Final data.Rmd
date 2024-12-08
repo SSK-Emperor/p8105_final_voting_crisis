@@ -219,6 +219,18 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
   )
 ```
 
+### **poverty distribution in New York State**
+```{r}
+ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(
+    title = "Poverty Rate by County",
+    x = "County",
+    y = "Poverty Rate (%)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 
 

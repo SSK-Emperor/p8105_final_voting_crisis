@@ -11,7 +11,7 @@
 
 
 
-<title>model.knit</title>
+<title>Model of Republician voting rate</title>
 
 <script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,6 +29,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
@@ -225,6 +228,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -232,6 +298,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -301,6 +377,7 @@ $(document).ready(function () {
 
 
 
+<h1 class="title toc-ignore">Model of Republician voting rate</h1>
 
 </div>
 
@@ -308,102 +385,52 @@ $(document).ready(function () {
 <div id="linear-model-of-trump-without-covid-factor"
 class="section level3">
 <h3>Linear model of Trump without Covid factor</h3>
-<pre class="r"><code>model1 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = final_data)</code></pre>
-<pre class="r"><code>summary(model1)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = republician_percent ~ below_poverty_percentage + 
-##     below_30_percent + above_65_percent + count, data = final_data)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -18.1585  -5.0112  -0.0049   6.2103  17.8703 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              85.395675  18.692931   4.568 2.82e-05 ***
-## below_poverty_percentage  0.158597   0.379335   0.418  0.67751    
-## below_30_percent         -1.090817   0.396790  -2.749  0.00807 ** 
-## above_65_percent         -0.355661   0.536953  -0.662  0.51050    
-## count                    -0.058061   0.008257  -7.032 3.34e-09 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 8.025 on 55 degrees of freedom
-##   (2 observations deleted due to missingness)
-## Multiple R-squared:  0.5764, Adjusted R-squared:  0.5456 
-## F-statistic: 18.71 on 4 and 55 DF,  p-value: 9.287e-10</code></pre>
-<pre class="r"><code>model1_data &lt;- final_data |&gt;
+<pre class="r"><code>model1 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = final_data)
+
+model1_data &lt;- final_data |&gt;
   add_predictions(model1) |&gt;
-  add_residuals(model1)</code></pre>
-<pre class="r"><code>ggplot(model1_data, aes(x = pred, y = resid)) +
+  add_residuals(model1)
+
+ggplot(model1_data, aes(x = pred, y = resid)) +
   geom_point(alpha = 0.2) +
+  labs(title = &quot;Predict compare to residuls without considering Covid&quot;,
+       x = &quot;Predict value&quot;,
+       y = &quot;residuals value&quot;) +
   geom_smooth()</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y
-## ~ x&#39;</code></pre>
-<pre><code>## Warning: Removed 2 rows containing non-finite outside the scale
-## range (`stat_smooth()`).</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values or values
-## outside the scale range (`geom_point()`).</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="model_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 </div>
 <div id="linear-model-of-trump-with-covid-factor"
 class="section level3">
 <h3>Linear model of Trump with Covid factor</h3>
-<pre class="r"><code>model2 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive, data = final_data)</code></pre>
-<pre class="r"><code>summary(model2)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = republician_percent ~ below_poverty_percentage + 
-##     below_30_percent + above_65_percent + count + Test_Positive, 
-##     data = final_data)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -18.8648  -4.7006  -0.5385   6.2492  18.1006 
-## 
-## Coefficients:
-##                           Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)              83.236912  19.206458   4.334 6.42e-05 ***
-## below_poverty_percentage  0.147124   0.382292   0.385   0.7019    
-## below_30_percent         -1.048760   0.406380  -2.581   0.0126 *  
-## above_65_percent         -0.328752   0.542508  -0.606   0.5471    
-## count                    -0.057787   0.008324  -6.943 5.11e-09 ***
-## Test_Positive             0.362566   0.650994   0.557   0.5799    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 8.076 on 54 degrees of freedom
-##   (2 observations deleted due to missingness)
-## Multiple R-squared:  0.5788, Adjusted R-squared:  0.5398 
-## F-statistic: 14.84 on 5 and 54 DF,  p-value: 3.75e-09</code></pre>
-<pre class="r"><code>model2_data &lt;- final_data |&gt;
+<pre class="r"><code>model2 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive, data = final_data)
+
+model2_data &lt;- final_data |&gt;
   add_predictions(model2) |&gt;
-  add_residuals(model2)</code></pre>
-<pre class="r"><code>ggplot(model2_data, aes(x = pred, y = resid)) +
+  add_residuals(model2)
+
+ggplot(model2_data, aes(x = pred, y = resid)) +
   geom_point(alpha = 0.2) +
+  labs(title = &quot;Predict compare to residuls when considering Covid&quot;,
+       x = &quot;Predict value&quot;,
+       y = &quot;residuals value&quot;)+
   geom_smooth()</code></pre>
-<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula = &#39;y
-## ~ x&#39;</code></pre>
-<pre><code>## Warning: Removed 2 rows containing non-finite outside the scale
-## range (`stat_smooth()`).</code></pre>
-<pre><code>## Warning: Removed 2 rows containing missing values or values
-## outside the scale range (`geom_point()`).</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="model_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<div id="compare-the-two-model" class="section level3">
-<h3>Compare the two model</h3>
+<div id="comparasion-of-two-model" class="section level3">
+<h3>Comparasion of two model</h3>
 <pre class="r"><code>compare = crossv_mc(final_data, 100) |&gt; mutate(train = map(train, as_tibble),
-                                      test = map(test, as_tibble))</code></pre>
-<pre class="r"><code>compare = compare |&gt; mutate(
+                                      test = map(test, as_tibble))
+
+compare = compare |&gt; mutate(
     model1 = map(train, \(df) lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = df)),
     model2 = map(train, \(df) lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive, data = df)),
     rmse_model1 = 
       map2_dbl(model1, test, \(mod, df) rmse(model = mod, data = df)),
     rmse_model2 = 
       map2_dbl(model2, test, \(mod, df) rmse(model = mod, data = df))
-)</code></pre>
-<pre class="r"><code>compare |&gt; 
+)
+
+compare |&gt; 
   select(starts_with(&quot;rmse&quot;)) |&gt; 
   pivot_longer(
     everything(),
@@ -412,11 +439,13 @@ class="section level3">
     names_prefix = &quot;rmse_&quot;) |&gt; 
   mutate(model = fct_inorder(model)) |&gt; 
   ggplot(aes(x = model, y = rmse)) + geom_violin()</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="model_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -454,6 +483,35 @@ $(document).ready(function () {
 });
 </script>
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

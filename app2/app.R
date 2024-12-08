@@ -1,16 +1,18 @@
-#install.packages(c("shiny", "leaflet", "sf", "dplyr"))
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    https://shiny.posit.co/
+#
 
-# Load required libraries
 library(shiny)
 library(leaflet)
 library(sf)
 library(dplyr)
 
-
-# Load data (adjust paths as needed)
-setwd("C:/Users/jklas/OneDrive - Columbia University Irving Medical Center/DS/p8105_final_voting_crisiss")
-
-ny_counties <- st_read("shiny/data/Counties.shp") |> 
+ny_counties <- st_read("data/Counties.shp") |> 
   select(-DOS_LL, -DOSLL_DATE)
 
 voting_covid_data <- read.csv("data/voting_covid_detail.csv") %>%
@@ -18,14 +20,11 @@ voting_covid_data <- read.csv("data/voting_covid_detail.csv") %>%
     result = if_else(democratic_percent > republician_percent, "demo", "rep")
   )
 
-
-
 # Merge shapefile with voting data
 map_data <- ny_counties %>%
   left_join(voting_covid_data, by = c("NAME" = "County")) |> 
   left_join(poverty_county_level, by = c("NAME" = "county")) |> 
-  left_join(voting_age_county_level, by = c("NAME" = "county")) 
-
+  left_join(voting_age_county_level, by = c("NAME" = "county"))
 
 # UI
 ui <- fluidPage(
@@ -77,9 +76,12 @@ server <- function(input, output, session) {
     
     leaflet(filtered_data()) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
-      addTiles() %>%
       addPolygons(
-        fillColor = ~ifelse(map_data$result == "demo", "blue", "red"),
+        fillColor = ~case_when(
+          result == "demo" ~ "blue",
+          result == "rep" ~ "red",
+          TRUE ~ "gray"
+        ),
         fillOpacity = input$opacity,
         color = "white",
         weight = 1,
@@ -89,9 +91,15 @@ server <- function(input, output, session) {
                         "Below Poverty %: ", below_poverty_percentage, "<br>",
                         "Above 65 %: ", above_65_percent, "<br>",
                         "Below 30 %: ", below_30_percent)
-      )
+      ) %>%
+      addLegend("bottomright", 
+                pal = colorFactor(c("blue", "red"), domain = c("demo", "rep")),
+                values = ~result,
+                title = "Voting Result",
+                opacity = input$opacity)
   })
+  
 }
 
-# Run the app
-shinyApp(ui, server)
+# Run the application 
+shinyApp(ui = ui, server = server)
