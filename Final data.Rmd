@@ -232,8 +232,54 @@ ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), 
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
+### **COVID-19 positive rate distribution in New York State**
+```{r}
+#Load the dataset and merge with election results based on county
+voting_covid_detail <- read_csv("data/voting_covid_detail.csv")%>%
+  janitor::clean_names()%>%
+  left_join(election_result,by="county")%>%
+  select(county,result,test_positive)
+
+#create barchart of test_positive distribution
+ggplot(voting_covid_detail, aes(x = reorder(county, test_positive), y = test_positive)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Healthcare Infrastructure Counts by County",
+       x = "County",
+       y = "Count of Hospitals") +
+  theme(axis.text.y = element_text(size = 6),
+        axis.text.x = element_text(size = 10))
+```
+
+
+### **COVID-19 positive rate distribution in New York State - Republician vs. Democratic**
+
+```{r}
+#Create dataframe of average test_positive rate in county --- Republician vs. Democratic
+test_positive_result <- aggregate(test_positive ~ result, data = voting_covid_detail, FUN = mean, na.rm = TRUE)
+
+# Create the bar chart
+ggplot(test_positive_result, aes(x = reorder(result, test_positive), y = test_positive, fill = result)) +
+  geom_bar(stat = "identity", color = "black") +
+  scale_fill_manual(values = c("democratic" = "blue", "republic" = "red")) +
+   ylim(0, max(test_positive_result$test_positive) * 1.4) +
+  coord_flip()+
+  theme_minimal() +
+  labs(
+    title = "Average Test-Positive Rate by Election Result",
+    x = "",
+    y = "Average Test-Positive Rate",
+    fill = "Result"
+  )
+```
+
+
+
+<<<<<<< HEAD
+=======
 
 
 
 
-
+>>>>>>> c7f93665931a6a1ec1caef092da6eee5a8c9865a
