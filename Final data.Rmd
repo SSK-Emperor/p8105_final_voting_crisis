@@ -219,6 +219,52 @@ ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
   )
 ```
 
+### **Poverty level in New York State**
+```{r}
+#Load the dataset and merge with election results based on county
+poverty_county_level<- read_excel("data/poverty_county_level__clean_v2.0.xlsx")%>%
+  slice(-1)%>%
+  slice(-1)%>%
+  left_join(election_result,by="county")%>%
+  select(county,result,below_poverty_percentage)
+
+```
+
+```{r}
+#create barchart of poverty distribution
+ggplot(poverty_county_level, aes(x = reorder(county, below_poverty_percentage), y = below_poverty_percentage)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  coord_flip() +
+  ylim(0, max(poverty_county_level$below_poverty_percentage) * 1.4) +
+  theme_minimal() +
+  labs(title = "Poverty Rate by County",
+       x = "County",
+       y = "Poverty Rate ") +
+  theme(axis.text.y = element_text(size = 6),
+        axis.text.x = element_text(size = 10))
+```
+
+### **Poverty level distribution in New York State - Republician vs. Democratic**
+
+```{r}
+#Create dataframe of average poverty rate in county --- Republician vs. Democratic
+poverty_county_level_result <- aggregate(below_poverty_percentage ~ result, data = poverty_county_level, FUN = mean, na.rm = TRUE)
+
+# Create the bar chart
+ggplot(poverty_county_level_results, aes(x = reorder(result, below_poverty_percentage), y = below_poverty_percentage, fill = result)) +
+  geom_bar(stat = "identity", color = "black") +
+  scale_fill_manual(values = c("democratic" = "blue", "republic" = "red")) +
+  ylim(0, max(poverty_county_level_result$below_poverty_percentage) * 1.4) +
+  geom_text(aes(label = round(below_poverty_percentage, 2)),)+
+  theme_minimal() +
+  labs(
+    title = "Average Poverty Rate by Election Result",
+    x = "",
+    y = "Average Poverty Rate",
+    fill = "Result"
+  )
+```
+
 
 ### **COVID-19 positive rate distribution in New York State**
 ```{r}
@@ -233,9 +279,9 @@ ggplot(voting_covid_detail, aes(x = reorder(county, test_positive), y = test_pos
   geom_bar(stat = "identity", fill = "skyblue") +
   coord_flip() +
   theme_minimal() +
-  labs(title = "Healthcare Infrastructure Counts by County",
+  labs(title = "COVID-19 positive rate by County",
        x = "County",
-       y = "Count of Hospitals") +
+       y = "COVID-19 Test Positive Rate ") +
   theme(axis.text.y = element_text(size = 6),
         axis.text.x = element_text(size = 10))
 ```
