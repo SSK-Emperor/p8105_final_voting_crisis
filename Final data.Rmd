@@ -255,7 +255,7 @@ ggplot(voting_covid_detail, aes(x = reorder(county, test_positive), y = test_pos
 
 ### **COVID-19 positive rate distribution in New York State - Republician vs. Democratic**
 
-```{r}
+```{r,message= FALSE,warning = FALSE}
 #Create dataframe of average test_positive rate in county --- Republician vs. Democratic
 test_positive_result <- aggregate(test_positive ~ result, data = voting_covid_detail, FUN = mean, na.rm = TRUE)
 
@@ -274,12 +274,3 @@ ggplot(test_positive_result, aes(x = reorder(result, test_positive), y = test_po
   )
 ```
 
-
-
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> c7f93665931a6a1ec1caef092da6eee5a8c9865a

@@ -28,30 +28,21 @@ map_data <- ny_counties %>%
 
 # UI
 ui <- fluidPage(
-  titlePanel("Voting Results in New York State"),
+  titlePanel("Interactive Map from Shapefile"),
+  
   sidebarLayout(
     sidebarPanel(
-      # Keep the sidebar controls the same
-      selectInput("color_var", "Select Data to Display:",
-                  choices = c("Voting Result" = "result"),
-                  selected = "result"),
-      sliderInput("poverty_threshold", "Select Poverty Percentage Threshold:",
-                  min = min(map_data$below_poverty_percentage, na.rm = TRUE),
-                  max = max(map_data$below_poverty_percentage, na.rm = TRUE),
-                  value = median(map_data$below_poverty_percentage, na.rm = TRUE),
-                  step = 1),
-      sliderInput("age_threshold_1", "Select Age Percentage Threshold (65+):",
-                  min = min(map_data$above_65_percent, na.rm = TRUE),
-                  max = max(map_data$above_65_percent, na.rm = TRUE),
-                  value = median(map_data$above_65_percent, na.rm = TRUE),
-                  step = 1),
-      sliderInput("age_threshold_2", "Select Age Percentage Threshold (30-):",
-                  min = min(map_data$below_30_percent, na.rm = TRUE),
-                  max = max(map_data$below_30_percent, na.rm = TRUE),
-                  value = median(map_data$below_30_percent, na.rm = TRUE),
-                  step = 1),
-      sliderInput("opacity", "Map Opacity:",
-                  min = 0, max = 1, value = 0.7, step = 0.1)
+      selectInput(
+        "color_var",
+        "Select Attribute to Color By:",
+        choices = colnames(map_data),
+        selected = colnames(map_data)[1]
+      ),
+      sliderInput(
+        "opacity",
+        "Polygon Opacity:",
+        min = 0, max = 1, value = 0.7, step = 0.1
+      )
     ),
     mainPanel(
       leafletOutput("map", height = "600px")
@@ -61,45 +52,35 @@ ui <- fluidPage(
 
 # Server
 server <- function(input, output, session) {
-  
-  # Reactive expression for filtered map data
-  filtered_data <- reactive({
-    map_data %>%
-      filter(below_poverty_percentage >= input$poverty_threshold &
-               above_65_percent >= input$age_threshold_1 &
-               below_30_percent >= input$age_threshold_2)
-  })
-  
-  # Render Leaflet map focused on New York State
   output$map <- renderLeaflet({
-    req(filtered_data())
+    req(input$color_var)
     
-    leaflet(filtered_data()) %>%
+    # Dynamically generate color palette
+    palette <- colorNumeric(
+      palette = "viridis", 
+      domain = map_data[[input$color_var]]
+    )
+    
+    # Create map
+    leaflet(map_data) %>%
       addProviderTiles(providers$CartoDB.Positron) %>%
       addPolygons(
-        fillColor = ~case_when(
-          result == "demo" ~ "blue",
-          result == "rep" ~ "red",
-          TRUE ~ "gray"
-        ),
+        fillColor = ~palette(map_data[[input$color_var]]),
         fillOpacity = input$opacity,
-        color = "white",
+        color = "black",
         weight = 1,
-        label = ~paste0("County: ", NAME, "<br>",
-                        "Democratic %: ", democratic_percent, "<br>",
-                        "Republican %: ", republician_percent, "<br>",
-                        "Below Poverty %: ", below_poverty_percentage, "<br>",
-                        "Above 65 %: ", above_65_percent, "<br>",
-                        "Below 30 %: ", below_30_percent)
+        label = ~paste0(input$color_var, ": ", map_data[[input$color_var]])
       ) %>%
-      addLegend("bottomright", 
-                pal = colorFactor(c("blue", "red"), domain = c("demo", "rep")),
-                values = ~result,
-                title = "Voting Result",
-                opacity = input$opacity)
+      addLegend(
+        "bottomright",
+        pal = palette,
+        values = ~map_data[[input$color_var]],
+        title = input$color_var,
+        opacity = 1
+      )
   })
-  
 }
 
-# Run the application 
+# Run the app
 shinyApp(ui = ui, server = server)
+
