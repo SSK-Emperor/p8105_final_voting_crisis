@@ -10,6 +10,10 @@ output:
 
 
 ### [**Data Source**](about_data.html)
+*COVID-19 Data:New York State Department of Health --- https://health.data.ny.gov
+*Demographic Data: U.S. Census data for age, income, and racial demographics. --- https://www.census.gov
+*Socioeconomic Indicators---poverty: Data on income Bureau of Labor Statistics --- https://www.bls.gov
+*Election Results: 2020 presidential election results from the NY State Board of Elections and NYC Open Data. 
 
 
 ### [**Model**](model.html)
