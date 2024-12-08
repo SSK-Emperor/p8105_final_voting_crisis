@@ -252,6 +252,7 @@ ggplot(test_positive_result, aes(x = reorder(result, test_positive), y = test_po
   geom_bar(stat = "identity", color = "black") +
   scale_fill_manual(values = c("democratic" = "blue", "republic" = "red")) +
    ylim(0, max(test_positive_result$test_positive) * 1.4) +
+  coord_flip()+
   theme_minimal() +
   labs(
     title = "Average Test-Positive Rate by Election Result",
