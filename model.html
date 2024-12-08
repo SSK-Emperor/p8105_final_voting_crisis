@@ -382,9 +382,8 @@ div.tocify {
 </div>
 
 
-<div id="linear-model-of-trump-without-covid-factor"
-class="section level3">
-<h3>Linear model of Trump without Covid factor</h3>
+<div id="linear-model-of-election-results" class="section level3">
+<h3>Linear Model of ELection ResultS</h3>
 <pre class="r"><code>model1 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count, data = final_data)
 
 model1_data &lt;- final_data |&gt;
@@ -393,15 +392,32 @@ model1_data &lt;- final_data |&gt;
 
 ggplot(model1_data, aes(x = pred, y = resid)) +
   geom_point(alpha = 0.2) +
-  labs(title = &quot;Predict compare to residuls without considering Covid&quot;,
-       x = &quot;Predict value&quot;,
-       y = &quot;residuals value&quot;) +
+  labs(title = &quot;Residual against predicted value regardless of COVID-19&quot;,
+       x = &quot;Predicted value&quot;,
+       y = &quot;residual value&quot;) +
   geom_smooth()</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="model_files/figure-html/unnamed-chunk-4-1.png" width="672" />
+*Formula:
+republican_percent∼below_poverty_percentage+below_30_percent+above_65_percent+count</p>
+<p>Description: This baseline linear regression model evaluates the
+relationship between Republican voting percentages and key demographic
+factors at the county level, excluding any variables related to
+COVID-19. These predictors include poverty levels, the proportion of the
+voting- population below 30 years old, the proportion of the voting-
+populationabove 65 years old, and total population count in the
+county.</p>
+<p>Residual Analysis: A scatter plot of residuals versus predictions
+reveals potential patterns in prediction errors, indicating whether the
+model assumptions hold and whether additional factors might improve
+predictive power.</p>
+<p>Null Hypothesis: Each coefficient of the independent variables
+(below_poverty_percentage, below_30_percent,above_65_percent, count) is
+equal to zero (H0:βi=0). This implies that these demographic factors
+have no effect on Republican voting percentages.</p>
 </div>
-<div id="linear-model-of-trump-with-covid-factor"
+<div id="linear-model-of-election-results-including-covid-19"
 class="section level3">
-<h3>Linear model of Trump with Covid factor</h3>
+<h3>Linear Model of ELection Results including COVID-19</h3>
 <pre class="r"><code>model2 = lm(republician_percent~below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive, data = final_data)
 
 model2_data &lt;- final_data |&gt;
@@ -410,14 +426,29 @@ model2_data &lt;- final_data |&gt;
 
 ggplot(model2_data, aes(x = pred, y = resid)) +
   geom_point(alpha = 0.2) +
-  labs(title = &quot;Predict compare to residuls when considering Covid&quot;,
+  labs(title = &quot;Residual against predicted value considering COVID-19&quot;,
        x = &quot;Predict value&quot;,
-       y = &quot;residuals value&quot;)+
+       y = &quot;residuals&quot;)+
   geom_smooth()</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="model_files/figure-html/unnamed-chunk-5-1.png" width="672" />
+Formula:
+republican_percent∼below_poverty_percentage+below_30_percent+above_65_percent+count+Test_Positive</p>
+<p>Description: This model extends reduced Model by including the
+variable (Test_Positive), representing COVID-19 test positivity rates at
+the county level. This addition captures the potential influence of the
+pandemic on voting behaviors.</p>
+<p>Residual Analysis: As with reduced model, residuals are analyzed
+against predictions to assess the model’s accuracy and the effect of
+COVID-19 variable.</p>
+<p>Null Hypothesis: Each coefficient of the independent variables,
+including Test_Positive, is equal to zero (H0:βi=0). Specifically, for
+the COVID-19 variable, H0: βTest_Positive=0, implying that the test
+postivity rate has no significant impact on Republican voting
+percentages.</p>
 </div>
-<div id="comparasion-of-two-model" class="section level3">
-<h3>Comparasion of two model</h3>
+<div id="comparasion-between-reduced-model-and-full-model"
+class="section level3">
+<h3>Comparasion between reduced model and full model</h3>
 <pre class="r"><code>compare = crossv_mc(final_data, 100) |&gt; mutate(train = map(train, as_tibble),
                                       test = map(test, as_tibble))
 
@@ -439,7 +470,28 @@ compare |&gt;
     names_prefix = &quot;rmse_&quot;) |&gt; 
   mutate(model = fct_inorder(model)) |&gt; 
   ggplot(aes(x = model, y = rmse)) + geom_violin()</code></pre>
-<p><img src="model_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="model_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+Methodology: A Monte Carlo cross-validation procedure with 100
+iterations is used to compare reduced model and full model based on
+their root mean squared error (RMSE) performance. The dataset is
+repeatedly split into training and testing sets, and both models are
+fitted on training data and evaluated on testing data.</p>
+<p>Visualization: A violin plot of RMSE values for the two models is
+generated to compare their predictive accuracy. The model with lower and
+more consistent RMSE values is considered superior in predictive
+performance. By incorporating demographic and pandemic-related factors,
+these models collectively aim to understand the dynamics influencing
+Republican voting rates and assess the impact of COVID-19 on the 2020
+election results.</p>
+<p>Null Hypothesis: There is no significant difference in predictive
+performance between Model 1 and Model 2 (H0:RMSEModel1=RMSEModel2). This
+implies that including the COVID-19 test positivity rate does not
+improve the model’s accuracy in predicting Republican voting
+percentages. These hypotheses are tested to evaluate the significance of
+each variable and the overall model improvement when accounting for
+COVID-19. Statistical significance is typically assessed using p-values
+for individual coefficients and RMSE differences for model
+comparison.</p>
 </div>
 
 
