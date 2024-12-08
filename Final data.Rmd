@@ -10,6 +10,7 @@ library(tidyverse)
 library(ggplot2)
 library(dplyr)
 library(stringr)
+library(readxl)
 ```
 
 ```{r}
@@ -19,7 +20,7 @@ covid_19 = read.csv("data/New_York_State_Statewide_COVID-19_Testing__Archived__2
 ```{r}
 covid_19_NY = filter(covid_19,
                      Test.Date == "11/03/2020" &
-                       Geography == "COUNTY")
+                     Geography == "COUNTY")
 ```
 
 ```{r}
@@ -121,5 +122,137 @@ df_age <- voting_age%>%
 #Binding those two into one dataframe
 voting_age_county_level <- cbind(first_column_age, df_age)%>%
   slice(-1)
+```
+
+
+*Create barchart for hospital_count_dataset --- used as illustration of dataset
+```{r}
+#load the dataset
+health_facility_count <- read_excel("data/2020_health_facility_count.xlsx")
+```
+
+```{r}
+#create barchart of hospital distribution
+ggplot(health_facility_count, aes(x = reorder(county, count), y = count)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Healthcare Infrastructure Counts by County",
+       x = "County",
+       y = "Count of Hospitals") +
+  theme(axis.text.y = element_text(size = 6),
+        axis.text.x = element_text(size = 10))
+```
+
+*Create barchart for hospoital count in county -republican vs. democratic
+```{r}
+#Getting election results in binary version
+election_result <- election_result%>%
+  janitor::clean_names()%>%
+  mutate(
+    result = if_else(democratic_percent > republician_percent, "democratic", "republic"))%>%
+  select(county,result)
+
+#merge tables to get hospital count classified by rep vs. demo
+election_result_hospital_count <- merge(election_result, health_facility_count, by = "county", all.x = TRUE)
+```
+
+```{r}
+#create barchart for hospital count based on election results
+count_result <- aggregate(count ~ result, data = election_result_hospital_count, FUN = sum, na.rm = TRUE)
+
+ggplot(count_result, aes(x = reorder(result, count), y = count, fill = result)) +
+  geom_bar(stat = "identity", color = "black") +
+  scale_fill_manual(values = c("democratic" = "blue", "republic" = "red")) +
+  coord_flip() +
+  theme_minimal() +
+  labs(title = "Hospital Counts by County --- democratic vs. republic",
+       x = "",
+       y = "Count of Healthcare Infrastructure",
+       fill = "Result")
+
+```
+
+*Create barchart for voting_age dataset--- used as illustration of dataset
+```{r}
+#load the dataset
+voting_age_county_level_clean <- read_excel("data/voting_age_county_level_clean_v2.0.xlsx")%>%
+  select(county,total_18_to_29_years,total_30_to_44_years,total_45_to_64_years,total_65_years_and_over)
+```
+
+```{r}
+#create long dataframe
+long_data <- voting_age_county_level_clean %>%
+  pivot_longer(
+    cols = starts_with("total_"), 
+    names_to = "age_group",       
+    values_to = "population")
+
+#create barchart
+ggplot(long_data, aes(x = reorder(county, population), y = population, fill = age_group)) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  coord_flip() +  
+  facet_wrap(~age_group, scales = "free_x") + 
+  theme_minimal() +
+  labs(
+    title = "Population Distribution by Age Group and County",
+    x = "County",
+    y = "Population Count"
+  ) +
+  theme(
+    strip.text = element_text(size = 7, face = "bold"), 
+    axis.text.y = element_text(size = 6),  
+    axis.text.x = element_text(size = 10),  
+    plot.title = element_text(size = 14, face = "bold")
+  )
+```
+
+*Create barchart for voting_age_distribution -republican vs. democratic
+```{r}
+#merge tables to get age_distribution classified by rep vs. demo
+election_result_voting_age_distribution <- merge(election_result, voting_age_county_level_clean, by = "county", all.x = TRUE)
+```
+
+```{r}
+#merge dataset for age distribution for democratic vs. republican
+voting_age_result_1 <- aggregate(total_18_to_29_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_2 <- aggregate(total_30_to_44_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_3 <- aggregate(total_45_to_64_years ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_4 <- aggregate(total_65_years_and_over ~ result, data = election_result_voting_age_distribution, FUN = sum, na.rm = TRUE)
+
+voting_age_result_df <- Reduce(function(x, y) merge(x, y, by = "result", all.x = TRUE), 
+                               list(voting_age_result_1, voting_age_result_2, voting_age_result_3, voting_age_result_4))
+```
+
+```{r}
+#create barchart for voting age distribution based on election results
+voting_age_long <- pivot_longer(
+  voting_age_result_df,
+  cols = starts_with("total_"),
+  names_to = "age_group",
+  values_to = "population"
+)
+
+# Create the bar chart
+ggplot(voting_age_long, aes(x = result, y = population, fill = age_group)) +
+  geom_bar(stat = "identity", position = "stack", color = "black") +
+  theme_minimal() +
+  labs(
+    title = "Population Distribution by Voting Age and Result",
+    x = "Result",
+    y = "Population Count",
+    fill = "Age Group"
+  ) +
+  scale_fill_brewer(palette = "Set3") + 
+  theme(
+    axis.text = element_text(size = 10),
+    axis.title = element_text(size = 12),
+    plot.title = element_text(size = 14, face = "bold"),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10)
+  )
 ```
 
